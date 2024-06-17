@@ -1,0 +1,7 @@
+{
+  "name": "Run4Recht",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
