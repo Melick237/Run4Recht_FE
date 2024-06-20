@@ -1,0 +1,19 @@
+<ion-content>
+  <div class="container">
+    <h1>RunForRecht</h1>
+    <div class="logo">
+      <img src="assets/images/logo.png" alt="Logo">
+    </div>
+    <div class="description">
+      <p><strong>Schrittzählerwettbewerb</strong></p>
+      <p><strong>der Brandenburger Justiz</strong></p>
+    </div>
+    <form (ngSubmit)="onSubmit()" class="form-container">
+      <ion-item lines="none" class="input-item">
+        <ion-label position="floating">Bitte geben Sie Ihre E-Mail ein.</ion-label>
+        <ion-input class="feld" type="email" [(ngModel)]="email" name="email" required placeholder="email@dienststelle.de"></ion-input>
+      </ion-item>
+      <ion-button type="submit" class="submit-button">Am Wettbewerb teilnehmen</ion-button>
+    </form>
+  </div>
+</ion-content>

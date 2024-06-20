@@ -1,0 +1,72 @@
+.home {
+    margin-bottom: 10px;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-top: 20px;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.icon {
+    margin-right: 10px;
+    color: #000000;
+    font-size: 1.5em;
+}
+
+ion-label {
+    font-size: 1.2em;
+}
+
+ion-input {
+    --padding-top: 10px;
+    --padding-bottom: 10px;
+    font-size: 1.2em;
+}
+
+ion-item {
+    margin-bottom: 20px;
+}
+
+ion-toggle {
+    margin-left: auto;
+}
+
+.notification-item {
+    display: flex;
+    align-items: center;
+    /* Alignement vertical au centre */
+    margin-bottom: 10px;
+}
+
+.label-text {
+    font-size: 1.2em;
+    flex: 1;
+    /* Pour que le texte "Benachrichtigungen" prenne l'espace disponible */
+}
+
+.line {
+    display: flex;
+    align-items: center;
+  }
+  .klein {
+    display: flex;
+    margin-left: auto;
+    font-size: 0.8em;
+    width: 70%;
+    max-width: 100%;
+  }
+  .icon-button {    
+    font-size: 3em;
+    display: flex;
+    align-items: center;
+  } 
+  
+  .tag{
+    font-size: 1.5em;
+  }
+  p{
+    text-align: center;
+    margin-top: -20px;
+    color: #979797;
+    font-size: 0.8em;
+  }

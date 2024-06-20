@@ -35,3 +35,32 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+:root {
+    --ion-color-primary: #0B1463;
+  }
+
+  .custom-modal-class {
+    ion-content {
+      --background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      margin: auto;
+      max-width: 95%;
+      max-height: 90%;
+    }
+  
+    .ion-padding {
+      padding: 1rem;
+    }
+  }
+  
+  ion-modal {
+    .modal-wrapper {
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+    }
+  }
+  
+  .alert-modal  {
+    --background: transparent !important;
+  }
+  

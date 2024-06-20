@@ -1,0 +1,75 @@
+<ion-content class="ion-padding">
+  <div class="date-container">
+    <div class="home">Rangliste</div>
+    <div class="wochen">
+      <ion-button shape="round" size="small">W1</ion-button>
+      <ion-button shape="round" size="small" color="light">W2</ion-button>
+      <ion-button shape="round" size="small" color="light">W3</ion-button>
+      <ion-button shape="round" size="small" color="light">W4</ion-button>
+      <ion-button shape="round" size="small" color="light">Gesamt</ion-button>
+    </div>
+  </div>
+
+  <ion-list>
+    <ion-item lines="none" (click)="onItemClick(1)" [ngClass]="{'clicked': selectedItem === 1}">
+      <ion-label class="line">
+        <span class="rangnumber">1. </span>
+        <ion-icon name="ellipse-outline" class="icon"></ion-icon>
+        <span class="text">Rathenow</span>
+        <span class="number">12.950</span>
+      </ion-label>
+    </ion-item>
+    <ion-item lines="none" (click)="onItemClick(2)" [ngClass]="{'clicked': selectedItem === 2}">
+      <ion-label class="line">
+        <span class="rangnumber">2. </span>
+        <ion-icon name="ellipse-outline" class="icon"></ion-icon>
+        <span class="text">Cottbus</span>
+        <span class="number">10.210</span>
+      </ion-label>
+    </ion-item>
+    <ion-item lines="none" (click)="onItemClick(3)" [ngClass]="{'clicked': selectedItem === 3}">
+      <ion-label class="line">
+        <span class="rangnumber">3. </span>
+        <ion-icon name="ellipse-outline" class="icon"></ion-icon>
+        <span class="text">Potsdam</span>
+        <span class="number">7.886</span>
+      </ion-label>
+    </ion-item>
+    <ion-item lines="none" (click)="onItemClick(4)" [ngClass]="{'clicked': selectedItem === 4}">
+      <ion-label class="line">
+        <span class="rangnumber">4. </span>
+        <ion-icon name="chevron-up" class="icon"></ion-icon>
+        <span class="text">Luckenwalde</span>
+        <span class="number">5.585</span>
+      </ion-label>
+    </ion-item>
+    <ion-item lines="none" (click)="onItemClick(5)" [ngClass]="{'clicked': selectedItem === 5}">
+      <ion-label class="line">
+        <span class="rangnumber">5. </span>
+        <ion-icon name="chevron-down" class="icon"></ion-icon>
+        <span class="text">Prenzlau</span>
+        <span class="number">5.532</span>
+      </ion-label>
+    </ion-item>
+    <ion-item lines="none" (click)="onItemClick(6)" [ngClass]="{'clicked': selectedItem === 6}">
+      <ion-label class="line">
+        <span class="rangnumber">6. </span>
+        <ion-icon name="chevron-up" class="icon"></ion-icon>
+        <span class="text">Nauen</span>
+        <span class="number">4.100</span>
+      </ion-label>
+    </ion-item>
+    <ion-item lines="none" (click)="onItemClick(7)" [ngClass]="{'clicked': selectedItem === 7}">
+      <ion-label class="line">
+        <span class="rangnumber">7. </span>
+        <ion-icon name="chevron-down" class="icon"></ion-icon>
+        <span class="text">Neuruppin</span>
+        <span class="number">3.966</span>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  
+  
+  
+  
+</ion-content>

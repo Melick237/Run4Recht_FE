@@ -1,0 +1,67 @@
+.home{
+    margin-bottom: 10px;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-top: 20px;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.wochen {
+    display: flex;
+    justify-content: space-between; /* Optionnel: ajoute de l'espace entre les boutons */
+    width: 100%;
+  }
+  
+  ion-button {
+    flex: 1; /* Chaque bouton prend une largeur égale */
+    text-transform: initial;
+    margin: 0 4px; /* Optionnel: ajoute un petit espace entre les boutons */
+  }
+
+  ion-list {
+    margin-top: 20px;
+    font-size: 3em;
+  }
+  
+  ion-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .text {
+    flex: 1;
+    font-size: 1.6em;
+    padding-left: 40px;
+    align-items: flex-start;
+  }
+  
+  .number {
+    text-align: right;
+    font-size: 1.6em;
+  }
+  .rangnumber {
+    font-weight: bold;
+    font-size: 2em;
+    padding-right: 10px;
+  }
+  
+  .icon {
+    font-size: 1.6em;
+  }
+  
+  .clicked {
+    background-color: lightgreen !important;
+  }
+  
+  
+  

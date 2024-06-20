@@ -1,0 +1,70 @@
+.home {
+    margin-bottom: 10px;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-top: 20px;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.wochen {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+ion-button {
+    flex: 1;
+    text-transform: initial;
+    margin: 0 4px;
+}
+
+.taille {
+    margin-top: 20px;
+    font-size: 1.3em;
+}
+
+.bold {
+    font-size: 1.4em;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.statistics {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.position {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 1.5em;
+    display: flex;
+    align-items: center;
+    /* Aligner les éléments verticalement */
+    justify-content: center;
+    /* Centrer horizontalement */
+    width: 100%;
+}
+
+.dienststelle {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.position span {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.chart-container {
+    margin-top: 20px;
+}
+
+.middle {
+    font-size: 1.8em;
+    white-space: nowrap;
+    font-weight: bold;
+}

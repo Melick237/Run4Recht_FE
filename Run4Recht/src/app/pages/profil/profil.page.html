@@ -1,0 +1,75 @@
+<div class="home">Profil</div>
+<ion-content>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="12" size-md="8">
+        <ion-item lines="none" class="line">
+          <ion-grid>
+            <ion-row class="ion-align-items-center">
+              <ion-col size="auto">
+                <ion-label class="tag">Tagesziel</ion-label>
+              </ion-col>
+              <ion-col>
+                <ion-button fill="outline" class="klein" shape="round">
+                  <div class="icon-button">
+                    <ion-icon slot="start" name="remove-circle-outline"></ion-icon>
+                  </div>
+                  <ion-input type="number" [(ngModel)]="stepGoal" min="0"></ion-input>
+                  <div class="icon-button">
+                    <ion-icon slot="end" name="add-circle-outline"></ion-icon>
+                  </div>
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+        <p>Anzahl der Schritte auf dem Homescreen.</p>       
+
+        <ion-item lines="none" class="line">
+          <ion-grid>
+            <ion-row class="ion-align-items-center">
+              <ion-col size="auto">
+                <ion-label class="tag">Körpergröße</ion-label>
+              </ion-col>
+              <ion-col>
+                <ion-button fill="outline" class="klein" shape="round">
+                  
+                  <ion-input type="number" [(ngModel)]="height" min="0" max="300"></ion-input>
+                  
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+        <p>Dient der Berechnung der Streckenkilometer.</p> 
+
+        <ion-item lines="none">
+          <ion-label position="stacked">Schrittlänge</ion-label>
+          <ion-input type="number" [(ngModel)]="stepLength" min="0" max="300"></ion-input>
+        </ion-item>
+
+
+
+        <div class="home">Einstellungen</div>
+        <div class="notification-item">
+          <ion-icon name="notifications-outline" class="icon"></ion-icon>
+          <ion-label class="label-text">Benachrichtigungen</ion-label>
+          <ion-toggle slot="end" [(ngModel)]="notificationsEnabled"></ion-toggle>
+          <br /><br />
+        </div>
+        <div class="notification-item">
+          <ion-icon name="sunny-outline" class="icon"></ion-icon>
+          <ion-label class="label-text">Nachtmodus</ion-label>
+          <ion-toggle slot="end" [(ngModel)]="nightModeEnabled"></ion-toggle>
+          <br /><br />
+        </div>
+        <div class="notification-item">
+          <ion-icon name="reader-outline" class="icon"></ion-icon>
+          <ion-label class="label-text">Manager-Ansicht</ion-label>
+          <ion-toggle slot="end" [(ngModel)]="managerViewEnabled"></ion-toggle>
+        </div>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
