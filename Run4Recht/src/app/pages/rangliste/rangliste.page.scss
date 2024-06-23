@@ -12,14 +12,19 @@
     justify-content: space-between; /* Optionnel: ajoute de l'espace entre les boutons */
     width: 100%;
   }
-  
+
   ion-segment.segment-round {
     width: 100%;
     justify-content: space-between;
     background-color: transparent;
     padding-bottom: 10px;
   }
-  
+
+.position{
+  --background: #1e612b;
+  --background-size: cover;
+}
+
   ion-segment-button.segment-button {
     flex: 1;
     max-width: 10% !important; /* Ajuste la largeur des boutons */
@@ -39,29 +44,31 @@
   ion-list {
     margin-top: 20px;
     font-size: 3em;
+    margin-left: -19px;
+    margin-right: -20px;
   }
-  
+
   ion-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid #ccc;
   }
-  
+
   .line {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
   }
-  
+
   .text {
     flex: 1;
     font-size: 1.6em;
     padding-left: 40px;
     align-items: flex-start;
   }
-  
+
   .number {
     text-align: right;
     font-size: 1.6em;
@@ -71,14 +78,13 @@
     font-size: 2em;
     padding-right: 10px;
   }
-  
+
   .icon {
     font-size: 1.6em;
   }
-  
+
   .clicked {
     background-color: lightgreen !important;
   }
-  
-  
-  
+
+

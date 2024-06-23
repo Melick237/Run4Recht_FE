@@ -11,11 +11,11 @@
               </ion-col>
               <ion-col>
                 <ion-button fill="outline" class="klein" shape="round">
-                  <div class="icon-button">
+                  <div class="icon-button" (click)="decreaseStepGoal()">
                     <ion-icon slot="start" name="remove-circle-outline"></ion-icon>
                   </div>
-                  <ion-input type="number" [(ngModel)]="stepGoal" min="0"></ion-input>
-                  <div class="icon-button">
+                  <ion-input type="text" [value]="formattedStepGoal" (ionInput)="updateStepGoal($event.target.value)"></ion-input>
+                  <div class="icon-button" (click)="increaseStepGoal()">
                     <ion-icon slot="end" name="add-circle-outline"></ion-icon>
                   </div>
                 </ion-button>
@@ -23,7 +23,8 @@
             </ion-row>
           </ion-grid>
         </ion-item>
-        <p>Anzahl der Schritte auf dem Homescreen.</p>       
+
+        <p>Anzahl der Schritte auf dem Homescreen.</p>
 
         <ion-item lines="none" class="line">
           <ion-grid>
@@ -35,7 +36,7 @@
                 <ion-button fill="outline" class="klein" shape="round">
                   <ion-select [(ngModel)]="height" placeholder="170 cm" toggleIcon="chevron-down-outline" class="height-select custom-toggle-icon">
                     <ion-select-option *ngFor="let h of heights" [value]="h">
-                      {{ h }} cm 
+                      {{ h }} cm
                     </ion-select-option>
                   </ion-select>
                 </ion-button>
@@ -43,7 +44,7 @@
             </ion-row>
           </ion-grid>
         </ion-item>
-        <p>Dient der Berechnung der Streckenkilometer.</p> 
+        <p>Dient der Berechnung der Streckenkilometer.</p>
 
         <ion-item lines="none" class="line">
           <ion-grid>
@@ -55,7 +56,7 @@
                 <ion-button fill="outline" class="klein" shape="round">
                   <ion-select [(ngModel)]="stepLength" placeholder="060 cm" toggleIcon="chevron-down-outline" class="height-select custom-toggle-icon">
                     <ion-select-option *ngFor="let s of stepLengths" [value]="s">
-                      {{ s }} cm 
+                      {{ s }} cm
                     </ion-select-option>
                   </ion-select>
                 </ion-button>
@@ -63,7 +64,7 @@
             </ion-row>
           </ion-grid>
         </ion-item>
-        <p>Dient der Berechnung der Streckenkilometer.</p> 
+        <p>Dient der Berechnung der Streckenkilometer.</p>
 
         <div class="home einstellung">Einstellungen</div>
         <div class="notification-item">

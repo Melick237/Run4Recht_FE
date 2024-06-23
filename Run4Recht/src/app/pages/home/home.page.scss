@@ -1,82 +1,88 @@
-.home{
-    margin-bottom: 10px;
-    font-size: 1.5em;
-    font-weight: bold;
-    margin-top: 25px;
+.home {
+  margin-bottom: 10px;
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-top: 25px;
 }
 
 .date-container h2 {
-    margin: 0;
-    line-height: 1.2; /* Adjust line-height to control spacing between lines */
-  }
+  margin: 0;
+  line-height: 1.2;
+  /* Adjust line-height to control spacing between lines */
+}
 
 .date-container {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .circle-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-  }
-  
-  .circle {
-    position: relative;
-    width: 200px;
-    height: 200px;
-  }
-  
-  .circle-bg {
-    fill: none;
-    stroke: #eee;
-    stroke-width: 3.8;
-  }
-  
-  .circle-progress {
-    fill: none;
-    stroke: #4caf50;
-    stroke-width: 2.8;
-    stroke-linecap: round;
-    transition: stroke-dasharray 0.3s;
-  }
-  
-  .percentage {
-    font-size: 0.5em;
-    text-anchor: middle;
-    fill: #000;
-    font-weight: bold;
-  }
-  
-  .steps-label {
-    font-size: 0.3em;
-    text-anchor: middle;
-    fill: #666;
-  }
-  
-  .distance-container {
-    text-align: center;
-    margin-bottom: 20px;
-  }
+  text-align: center;
+  margin-bottom: 20px;
+}
 
-  .distance-container p {
-    margin: 0;
-    font-size: 1.5em; /* Taille du texte pour le paragraphe */
-  }
-  
-  .distance-container h2 {
-    margin: 20px 0 0 0; /* Marge supérieure de 10px, pas de marge inférieure */
-    font-size: 1.8em; /* Taille du texte pour le totalDistance */
-    font-weight: bold; /* Texte en gras pour totalDistance */
-  }
-  
-  ion-button {
-    margin-top: 40px;
-    text-transform: initial;
-    font-size: 1em;
-  }
+.circle-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
 
-  ion-footer {
-    border-top: 1px solid #ccc;
-  }
-  
+.circle {
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+
+.circle-bg {
+  fill: none;
+  stroke: #eee;
+  stroke-width: 3.8;
+}
+
+.circle-progress {
+  fill: none;
+  stroke: #4caf50;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.3s;
+}
+
+.percentage {
+  font-size: 0.5em;
+  text-anchor: middle;
+  fill: #000;
+  font-weight: bold;
+}
+
+.steps-label {
+  font-size: 0.3em;
+  text-anchor: middle;
+  fill: #666;
+}
+
+.distance-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.distance-container p {
+  margin: 0;
+  font-size: 1.5em;
+  /* Taille du texte pour le paragraphe */
+}
+
+.distance-container h2 {
+  margin: 20px 0 0 0;
+  /* Marge supérieure de 10px, pas de marge inférieure */
+  font-size: 1.8em;
+  /* Taille du texte pour le totalDistance */
+  font-weight: bold;
+  /* Texte en gras pour totalDistance */
+}
+
+ion-button {
+  margin-top: 40px;
+  text-transform: initial;
+  font-size: 1em;
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+ion-footer {
+  border-top: 1px solid #ccc;
+}

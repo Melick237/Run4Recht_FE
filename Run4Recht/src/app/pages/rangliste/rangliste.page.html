@@ -13,7 +13,8 @@
   </div>
 
   <ion-list>
-    <ion-item *ngFor="let ranking of rankings; let i = index" lines="none" (click)="onItemClick(i + 1)" [ngClass]="{'clicked': selectedItem === i + 1}">
+    <!--todo check if this is correct-->
+    <ion-item class="position" *ngFor="let ranking of rankings; let i = index" lines="none" (click)="onItemClick(i + 1)" [ngClass]="{'clicked': selectedItem === i + 1}">
       <ion-label class="line">
         <span class="rangnumber">{{ i + 1 }}. </span>
         <ion-icon name="ellipse-outline" class="icon"></ion-icon>

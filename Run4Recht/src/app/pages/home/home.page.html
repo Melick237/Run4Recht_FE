@@ -1,8 +1,11 @@
 <ion-content class="ion-padding">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingText="Pull to refresh" refreshingSpinner="circles"></ion-refresher-content>
+  </ion-refresher>
   <div class="date-container">
     <div class="home">Home</div>
     <h2>{{ date1 }}</h2>
-    <!--<h2>{{ date2 }}</h2>-->
+    <h2>{{ date2 }}</h2>
   </div>
   <div class="circle-container">
     <div class="circle">
@@ -23,9 +26,8 @@
     <p>zurückgelegte Strecke:</p>
     <h2>{{ totalDistance }} km</h2>
   </div>
-    <ion-button expand="block" (click)="openStepsModal()">
-      <ion-icon name="pencil" slot="start"></ion-icon>
-      Schritte nachtragen
-    </ion-button>
-
+  <ion-button expand="block" (click)="openStepsModal()">
+    <ion-icon name="pencil" slot="start"></ion-icon>
+    Schritte nachtragen
+  </ion-button>
 </ion-content>

@@ -29,4 +29,26 @@ export class ProfilPage implements OnInit {
   ngOnInit() {
   }
 
+  // Méthodes pour augmenter et diminuer la valeur de stepGoal
+  increaseStepGoal() {
+    this.stepGoal += 50;
+  }
+
+  decreaseStepGoal() {
+    if (this.stepGoal > 0) {
+      this.stepGoal -= 50;
+    }
+  }
+
+  // Méthode pour formater stepGoal pour affichage
+  get formattedStepGoal(): string {
+    return this.stepGoal.toLocaleString('de-DE');
+  }
+
+  // Méthode pour mettre à jour stepGoal depuis l'input
+  updateStepGoal(value: string | number | null | undefined) {
+    if (typeof value === 'string') {
+      this.stepGoal = parseInt(value.replace(/\./g, ''), 10) || 0;
+    }
+  }
 }

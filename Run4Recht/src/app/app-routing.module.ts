@@ -2,9 +2,12 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './tabs/tabs.page';
+import {AuthGuard} from "./auth.guard";
 
 const routes: Routes = [
   {
+
+
     path: '',
     component: TabsPage,
     children: [
@@ -13,13 +16,12 @@ const routes: Routes = [
         pathMatch: 'full',
         redirectTo: 'home'
       },
-      {
-        path: 'login',
-        loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule)
-      },
+
       {
         path: 'home',
-        loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule)
+        loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule),
+        canActivate: [AuthGuard]
+
       },
       {
         path: 'rangliste',
@@ -42,6 +44,10 @@ const routes: Routes = [
         loadChildren: () => import('./pages/rangliste-manager/rangliste-manager.module').then( m => m.RanglisteManagerPageModule)
       }
     ]
+  },
+  {
+  path: 'login',
+    loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule)
   },
   {
     path: '**', // Gérer les routes inconnues (404)

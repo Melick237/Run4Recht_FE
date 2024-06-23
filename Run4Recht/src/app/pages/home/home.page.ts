@@ -88,17 +88,26 @@ export class HomePage implements OnInit, OnDestroy {
           this.totalDistance = data[0].strecke;
           this.calculateProgress(); // Recalculate progress with the new data
 
-/*          const todayStatistic = data.find(stat => stat.datum === today);
-          if (todayStatistic) {
-            this.steps = todayStatistic.schritte;
-            this.totalDistance = todayStatistic.strecke;
-            this.calculateProgress(); // Recalculate progress with the new data
-          }*/
+          /*          const todayStatistic = data.find(stat => stat.datum === today);
+                    if (todayStatistic) {
+                      this.steps = todayStatistic.schritte;
+                      this.totalDistance = todayStatistic.strecke;
+                      this.calculateProgress(); // Recalculate progress with the new data
+                    }*/
         }
       },
       error => {
         console.error('line 94 Error loading statistics', error);
       }
     );
+  }
+
+  // Method to refresh the statistics when the user swipes down
+  doRefresh(event: any) {
+    const user = this.userService.getUser();
+    if (user) {
+      this.loadTodayStatistics(user);
+    }
+    event.target.complete();
   }
 }
