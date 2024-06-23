@@ -32,6 +32,14 @@ export class HomePage implements OnInit, OnDestroy {
       component: StepsModalComponent,
       cssClass: 'alert-modal'
     });
+
+    modal.onDidDismiss().then(() => {
+      const user = this.userService.getUser();
+      if (user) {
+        this.loadTodayStatistics(user);
+      }
+    });
+
     return await modal.present();
   }
 
@@ -56,10 +64,10 @@ export class HomePage implements OnInit, OnDestroy {
     const options: Intl.DateTimeFormatOptions = { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' };
 
     const formattedDate = today.toLocaleDateString('de-DE', options);
-    const [weekday, day, month, year] = formattedDate.split(', ');
+    const [weekday, date] = formattedDate.split(', ');
 
     this.date1 = `${weekday}, der`;
-    this.date2 = `${day}.${month}.${year}`;
+    this.date2 = `${date}`;
   }
 
   calculateProgress() {
@@ -87,13 +95,6 @@ export class HomePage implements OnInit, OnDestroy {
           this.steps = data[0].schritte;
           this.totalDistance = data[0].strecke;
           this.calculateProgress(); // Recalculate progress with the new data
-
-          /*          const todayStatistic = data.find(stat => stat.datum === today);
-                    if (todayStatistic) {
-                      this.steps = todayStatistic.schritte;
-                      this.totalDistance = todayStatistic.strecke;
-                      this.calculateProgress(); // Recalculate progress with the new data
-                    }*/
         }
       },
       error => {

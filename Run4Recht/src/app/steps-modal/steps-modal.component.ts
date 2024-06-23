@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { ApiService } from '../api.service';
 import { UserService } from '../user.service';
-import { PeriodStatisticDto } from '../models';
+import { StatisticDto } from '../models';
 
 @Component({
   selector: 'app-steps-modal',
@@ -10,8 +10,8 @@ import { PeriodStatisticDto } from '../models';
   styleUrls: ['./steps-modal.component.scss'],
 })
 export class StepsModalComponent {
-  startDate: string = "";
-  endDate: string = "";
+  startDate: string = new Date().toISOString().split('T')[0];
+  endDate: string = new Date().toISOString().split('T')[0];
   steps: number = 0;
 
   constructor(
@@ -25,6 +25,7 @@ export class StepsModalComponent {
   }
 
   onStartDateChange(event: any) {
+    console.log("event start date ", event.detail.startDate, event.detail.value)
     this.startDate = event.detail.value;
   }
 
@@ -34,27 +35,26 @@ export class StepsModalComponent {
 
   saveSteps() {
     const user = this.userService.getUser();
-    if (user) {
-      const periodStatistic: PeriodStatisticDto = {
-        mitarbeiter_id: user.id,
-        schritte: this.steps,
-        strecke: this.calculateDistance(this.steps),
-        von_datum: this.startDate,
-        bis_datum: this.endDate
-      };
-
-      this.apiService.updateStatistics(periodStatistic).subscribe(
-          (response: any) => {
-          console.log('Steps updated successfully:', response);
-          this.dismiss();
-        },
-          (error: any) => {
-          console.error('Error updating steps:', error);
-        }
-      );
-    } else {
-      console.error('User not logged in');
+    if (!user) {
+      console.error('Line 38 User not logged in');
+      return;
     }
+    console.log("line 41 date", this.startDate)
+
+    const statistic: StatisticDto = {
+      id: null,
+      mitarbeiter_id: user.id,
+      schritte: this.steps,
+      strecke: this.calculateDistance(this.steps),
+      datum: this.startDate // Use the start date as the date for this statistic
+    };
+
+    this.apiService.updateStatistic(statistic).subscribe(response => {
+      console.log('Line 51 Steps updated successfully:', response);
+      this.modalController.dismiss();
+    }, error => {
+      console.error('Line 54 Error updating steps:', error);
+    });
   }
 
   calculateDistance(steps: number): number {
