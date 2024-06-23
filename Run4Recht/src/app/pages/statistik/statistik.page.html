@@ -2,11 +2,13 @@
   <div class="date-container">
     <div class="home">Statistik</div>
     <div class="wochen">
-      <ion-button shape="round" size="small">W1</ion-button>
-      <ion-button shape="round" size="small" color="light">W2</ion-button>
-      <ion-button shape="round" size="small" color="light">W3</ion-button>
-      <ion-button shape="round" size="small" color="light">W4</ion-button>
-      <ion-button shape="round" size="small" color="light">Gesamt</ion-button>
+      <ion-segment value="W1" mode="ios" class="segment-round">
+        <ion-segment-button class="segment-button" value="W1">W1</ion-segment-button>
+        <ion-segment-button class="segment-button" value="W2">W2</ion-segment-button>
+        <ion-segment-button class="segment-button" value="W3">W3</ion-segment-button>
+        <ion-segment-button class="segment-button" value="W4">W4</ion-segment-button>
+        <ion-segment-button class="segment-button" value="Gesamt">Gesamt</ion-segment-button>
+      </ion-segment>
     </div>
   </div>
   <div class="statistics">
