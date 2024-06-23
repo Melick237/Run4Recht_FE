@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
+import { ApiService } from '../../api.service';
+import { StatisticDto } from '../../models';
 
 @Component({
   selector: 'app-statistik',
@@ -7,24 +9,47 @@ import { Chart, registerables } from 'chart.js';
   styleUrls: ['./statistik.page.scss'],
 })
 export class StatistikPage implements OnInit {
+  totalSteps: number = 0;
+  averageSteps: number = 0;
+  statistics: StatisticDto[] = [];
 
-  constructor() {
+  constructor(private apiService: ApiService) {
     Chart.register(...registerables);
   }
 
   ngOnInit() {
-    this.createChart();
+    this.loadStatistics();
+  }
+
+  loadStatistics() {
+    this.apiService.getStatistics(1).subscribe((data: StatisticDto[]) => {
+      this.statistics = data;
+      this.calculateTotals();
+      this.createChart();
+    }, error => {
+      console.error('Error fetching statistics', error);
+    });
+  }
+
+  calculateTotals() {
+    if (this.statistics.length > 0) {
+      this.totalSteps = this.statistics.reduce((sum, stat) => sum + stat.schritte, 0);
+      this.averageSteps = this.totalSteps / this.statistics.length;
+    }
   }
 
   createChart() {
     const ctx = document.getElementById('myChart') as HTMLCanvasElement;
+    const data = this.statistics.map(stat => stat.schritte);
+    const labels = this.statistics.map((_, index) => `Day ${index + 1}`); // Adjust labels as needed
+
     new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
+        labels: labels,
         datasets: [{
-          label: '',
-          data: [8000, 12000, 10000, 9000, 11000, 7000, 10000],
+          label: 'Steps',
+          data: data,
           backgroundColor: [
             "#1E612B",
             "#1E612B",
@@ -43,18 +68,18 @@ export class StatistikPage implements OnInit {
           y: {
             beginAtZero: true,
             grid: {
-              display: false, // Désactiver la grille
+              display: false,
             },
           },
           x: {
             grid: {
-              display: false, // Désactiver la grille
+              display: false,
             },
           },
         },
         plugins: {
           legend: {
-            display: false // Masquer la légende
+            display: false
           }
         }
       }

@@ -12,11 +12,11 @@
   <div class="statistics">
     <div>
       <div class="taille">Gesamt</div>
-      <div class="bold">70.650</div>
+      <div class="bold">{{ totalSteps }}</div>
     </div>
     <div>
       <div class="taille">Durchschnitt</div>
-      <div class="bold">10.092</div>
+      <div class="bold">{{ averageSteps | number:'1.0-0' }}</div>
     </div>
   </div>
 
@@ -32,4 +32,3 @@
     <span>8. -458</span>
   </div>
 </ion-content>
-

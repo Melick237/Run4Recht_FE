@@ -1,3 +1,8 @@
+export enum Role {
+  ADMIN,
+  USER
+}
+
 export interface CourtDto {
   id: number;
   name: string;
@@ -26,7 +31,7 @@ export interface RankingDto {
 }
 
 export interface StatisticDto {
-  id: number;
+  id: number|null;
   mitarbeiter_id: number;
   schritte: number;
   strecke: number;
@@ -38,15 +43,16 @@ export interface TimePeriodDto {
   bis_datum: string; // Use string for dates in TypeScript for easier serialization
 }
 
-export interface Role {
-  id: number;
-  name: string;
-}
-
 export interface UserDto {
   id: number;
   name: string;
   email: string;
   role: Role;
   dienstelle_id: number;
+  stepGoal?: number; // Add optional fields if they exist in your backend model
+  height?: number;
+  stepLength?: number;
+  notificationsEnabled?: boolean;
+  nightModeEnabled?: boolean;
+  managerViewEnabled?: boolean;
 }

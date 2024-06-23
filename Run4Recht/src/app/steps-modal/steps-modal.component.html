@@ -2,23 +2,50 @@
   <div class="header">Zeitraum und Schritte eintragen</div>
 
   <div class="top">
-    <ion-button fill="outline">
-      <ion-icon slot="start" name="calendar"></ion-icon>
-      07.09.2024
-    </ion-button> - 
-    <ion-button fill="outline">
-      <ion-icon slot="start" name="calendar"></ion-icon>
-      10.09.2024
-    </ion-button>
+    <div class="button-container">
+      <ion-button fill="outline" class="ion-rounded">
+        <ion-icon slot="start" name="calendar"></ion-icon>
+        <ion-datetime-button datetime="datetime" class="custom-button">
+          <ion-icon name="calendar-outline"></ion-icon>
+        </ion-datetime-button>
+        <ion-modal [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime id="datetime" presentation="date"></ion-datetime>
+          </ng-template>
+        </ion-modal>
+      </ion-button>
+      <ion-icon class="tiret" name="remove"></ion-icon>
+      <ion-button fill="outline" class="ion-rounded">
+        <ion-icon slot="start" name="calendar"></ion-icon>
+        <ion-datetime-button datetime="datetime2" class="custom-button">
+          <ion-icon name="calendar-outline"></ion-icon>
+        </ion-datetime-button>
+        <ion-modal [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime id="datetime2" presentation="date"></ion-datetime>
+          </ng-template>
+        </ion-modal>
+      </ion-button>
+    </div>
+    
 
-    <ion-input label="Schritte" label-placement="floating" fill="outline" placeholder="0000"></ion-input>
+    <ion-input label="Schritte" label-placement="floating" fill="outline" placeholder="0000" class="rounded"></ion-input>
   </div>
 
   <div class="button-container">
-    <ion-button color="light" (click)="dismiss()">Abbrechen</ion-button>
-    <ion-button color="primary" type="submit">Speichern</ion-button>
+    <ion-button color="light" (click)="dismiss()" class="left-button">Abbrechen</ion-button>
+    <ion-button color="primary" type="submit" class="right-button">Speichern</ion-button>
   </div>
+  
 
   
   
 </div>
+
+
+
+
+
+<ion-datetime-button datetime="datetime" class="custom-button">
+  <ion-icon name="calendar-outline"></ion-icon>
+</ion-datetime-button>

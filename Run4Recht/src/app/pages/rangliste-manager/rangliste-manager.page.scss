@@ -1,0 +1,101 @@
+.home{
+  margin-bottom: 10px;
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-top: 20px;
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.wochen {
+  display: flex;
+  justify-content: center; /* Centrer les boutons */
+  width: 100%;
+}
+
+ion-segment.segment-round {
+  width: 100%;
+  justify-content: space-between;
+  background-color: transparent;
+  padding-bottom: 10px;
+}
+
+ion-segment-button.segment-button {
+  flex: 1;
+  max-width: 10% !important; /* Ajuste la largeur des boutons */
+  margin: 0 2px; /* Espace entre les boutons */
+  border-radius: 20px; /* Bords arrondis */
+  --border-radius: 20px; /* Bords arrondis */
+  --background: #F6F6F6; /* Fond blanc par défaut */
+  --background-checked: #0B1463; /* Fond bleu quand sélectionné */
+  text-transform: initial;
+  --color: black; /* Couleur du texte non sélectionné */
+  --color-checked: rgb(255, 255, 255) !important; /* Couleur du texte quand sélectionné */
+  --indicator-color: transparent; /* Supprime l'indicateur */
+  --border-width: 0; /* Supprime les bordures verticales */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Ajoute une ombre */
+}
+
+ion-list {
+  margin-top: 20px;
+  font-size: 3em;
+}
+
+ion-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #ccc;
+}
+
+.line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.text {
+  flex: 1;
+  font-size: 1.6em;
+  padding-left: 20px;
+  align-items: flex-start;
+}
+
+.number {
+  font-size: 1.6em;
+  display: inline-block; /* Met le span sur la meme ligne */
+  vertical-align: middle; /* Ajuste l'alignement vertical si besoin */
+}
+.rangnumber {
+  font-weight: bold;
+  font-size: 2em;
+  padding-right: 10px;
+}
+
+.icon {
+  font-size: 1.6em;
+}
+
+.clicked {
+  background-color: lightgreen !important;
+}
+
+.icon-container {
+  display: inline-block; /* Met le div sur la meme ligne */
+  vertical-align: middle; /* Ajuste l'alignement vertical si besoin */
+  margin-left: 5px; /* Ajuste l'espacement horizontal entre le nombre et l'icone */
+  align-items: center;
+  justify-content: center;
+  width: 30px; /* Adjust size as needed */
+  height: 30px; /* Adjust size as needed */
+  border: 2px solid #0B1463; /* Circle border color */
+  border-radius: 50%; /* Makes the div a circle */
+  margin-bottom: 7px;
+}
+
+.pencil-icon {
+  font-size: 20px; /* Adjust icon size as needed */
+  color: #0B1463; /* Icon color */
+  padding-left: 2.5px;
+}

@@ -33,9 +33,11 @@
               </ion-col>
               <ion-col>
                 <ion-button fill="outline" class="klein" shape="round">
-                  
-                  <ion-input type="number" [(ngModel)]="height" min="0" max="300"></ion-input>
-                  
+                  <ion-select [(ngModel)]="height" placeholder="170 cm" toggleIcon="chevron-down-outline" class="height-select custom-toggle-icon">
+                    <ion-select-option *ngFor="let h of heights" [value]="h">
+                      {{ h }} cm 
+                    </ion-select-option>
+                  </ion-select>
                 </ion-button>
               </ion-col>
             </ion-row>
@@ -43,14 +45,27 @@
         </ion-item>
         <p>Dient der Berechnung der Streckenkilometer.</p> 
 
-        <ion-item lines="none">
-          <ion-label position="stacked">Schrittlänge</ion-label>
-          <ion-input type="number" [(ngModel)]="stepLength" min="0" max="300"></ion-input>
+        <ion-item lines="none" class="line">
+          <ion-grid>
+            <ion-row class="ion-align-items-center">
+              <ion-col size="auto">
+                <ion-label class="tag">Schrittlänge</ion-label>
+              </ion-col>
+              <ion-col>
+                <ion-button fill="outline" class="klein" shape="round">
+                  <ion-select [(ngModel)]="stepLength" placeholder="060 cm" toggleIcon="chevron-down-outline" class="height-select custom-toggle-icon">
+                    <ion-select-option *ngFor="let s of stepLengths" [value]="s">
+                      {{ s }} cm 
+                    </ion-select-option>
+                  </ion-select>
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
         </ion-item>
+        <p>Dient der Berechnung der Streckenkilometer.</p> 
 
-
-
-        <div class="home">Einstellungen</div>
+        <div class="home einstellung">Einstellungen</div>
         <div class="notification-item">
           <ion-icon name="notifications-outline" class="icon"></ion-icon>
           <ion-label class="label-text">Benachrichtigungen</ion-label>

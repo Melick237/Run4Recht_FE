@@ -13,10 +13,27 @@
     width: 100%;
   }
   
-  ion-button {
-    flex: 1; /* Chaque bouton prend une largeur égale */
+  ion-segment.segment-round {
+    width: 100%;
+    justify-content: space-between;
+    background-color: transparent;
+    padding-bottom: 10px;
+  }
+  
+  ion-segment-button.segment-button {
+    flex: 1;
+    max-width: 10% !important; /* Ajuste la largeur des boutons */
+    margin: 0 2px; /* Espace entre les boutons */
+    border-radius: 20px; /* Bords arrondis */
+    --border-radius: 20px; /* Bords arrondis */
+    --background: #F6F6F6; /* Fond blanc par défaut */
+    --background-checked: #0B1463; /* Fond bleu quand sélectionné */
     text-transform: initial;
-    margin: 0 4px; /* Optionnel: ajoute un petit espace entre les boutons */
+    --color: black; /* Couleur du texte non sélectionné */
+    --color-checked: rgb(255, 255, 255) !important; /* Couleur du texte quand sélectionné */
+    --indicator-color: transparent; /* Supprime l'indicateur */
+    --border-width: 0; /* Supprime les bordures verticales */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Ajoute une ombre */
   }
 
   ion-list {
