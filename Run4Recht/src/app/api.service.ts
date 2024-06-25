@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CourtDto, DepartmentDto, PeriodStatisticDto, RankingDto, StatisticDto, TimePeriodDto, UserDto, Role } from './models';
+import { CourtDto, DepartmentDto, PeriodStatisticDto, RankingDto, StatisticDto, TimePeriodDto, UserDto, ProfileDto, TournamentInfoDto } from './models';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +34,10 @@ export class ApiService {
   getRankingsGroupByDepartment(): Observable<RankingDto[]> {
     return this.http.get<RankingDto[]>(`${this.baseUrl}/ranking`);
   }
+/*  getRankingsGroupByDepartment(departmentId: number): Observable<StatisticDto[]> {
+    return this.http.get<StatisticDto[]>(`${this.baseUrl}/statistiken/dienstellen/${departmentId}`);
+  }*/
+
 
   getRankingsGroupByDepartmentWithPeriod(timePeriodDto: TimePeriodDto): Observable<RankingDto[]> {
     return this.http.post<RankingDto[]>(`${this.baseUrl}/ranking/zeitraum`, timePeriodDto);
@@ -79,5 +83,23 @@ export class ApiService {
 
   getUsersInDepartment(departmentId: number): Observable<UserDto[]> {
     return this.http.post<UserDto[]>(`${this.baseUrl}/mitarbeiter/${departmentId}`, { departmentId });
+  }
+
+  // Profile APIs
+  getProfile(userId: number): Observable<ProfileDto> {
+    return this.http.get<ProfileDto>(`${this.baseUrl}/profil/${userId}`);
+  }
+
+  updateProfile(userId: number, profileDto: ProfileDto): Observable<ProfileDto> {
+    return this.http.put<ProfileDto>(`${this.baseUrl}/profil/${userId}`, profileDto);
+  }
+
+  // Tournament Information APIs
+  getTournamentInfo(): Observable<TournamentInfoDto> {
+    return this.http.get<TournamentInfoDto>(`${this.baseUrl}/turnierinfo`);
+  }
+
+  addTournamentInfo(infoDto: TournamentInfoDto): Observable<TournamentInfoDto> {
+    return this.http.put<TournamentInfoDto>(`${this.baseUrl}/turnierinfo`, infoDto);
   }
 }

@@ -31,7 +31,7 @@ export interface RankingDto {
 }
 
 export interface StatisticDto {
-  id: number|null;
+  id: number | null;
   mitarbeiter_id: number;
   schritte: number;
   strecke: number;
@@ -55,4 +55,17 @@ export interface UserDto {
   notificationsEnabled?: boolean;
   nightModeEnabled?: boolean;
   managerViewEnabled?: boolean;
+}
+
+export interface ProfileDto {
+  tagesziel: number;
+  koerpergroesse: number;
+  schrittlaenge: number;
+}
+
+export interface TournamentInfoDto {
+  titel: string;
+  datum_beginn: string; // Use string for dates in TypeScript for easier serialization
+  datum_ende: string; // Use string for dates in TypeScript for easier serialization
+  beschreibung: string;
 }

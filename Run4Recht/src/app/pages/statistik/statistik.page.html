@@ -2,12 +2,10 @@
   <div class="date-container">
     <div class="home">Statistik</div>
     <div class="wochen">
-      <ion-segment value="W1" mode="ios" class="segment-round">
-        <ion-segment-button class="segment-button" value="W1">W1</ion-segment-button>
-        <ion-segment-button class="segment-button" value="W2">W2</ion-segment-button>
-        <ion-segment-button class="segment-button" value="W3">W3</ion-segment-button>
-        <ion-segment-button class="segment-button" value="W4">W4</ion-segment-button>
-        <ion-segment-button class="segment-button" value="Gesamt">Gesamt</ion-segment-button>
+      <ion-segment [value]="currentWeek" (ionChange)="onSegmentChanged($event)" mode="ios" class="segment-round">
+        <ion-segment-button class="segment-button" *ngFor="let week of weekOptions" [value]="week">
+          {{ week }}
+        </ion-segment-button>
       </ion-segment>
     </div>
   </div>
@@ -32,5 +30,8 @@
     <span>6. +210</span>
     <span class="middle">&larr; 7. &rarr;</span>
     <span>8. -458</span>
+<!--    <span *ngIf="differenceToFront !== null">{{ position - 1 }}. +{{ differenceToFront }}</span>
+    <span class="middle">&larr; {{ position }}. &rarr;</span>
+    <span *ngIf="differenceToBack !== null">{{ position + 1 }}. -{{ differenceToBack }}</span>-->
   </div>
 </ion-content>
