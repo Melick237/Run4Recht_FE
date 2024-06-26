@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
 import { ApiService } from '../../api.service';
-import { StatisticDto, TimePeriodDto, TournamentInfoDto, UserDto, RankingDto } from '../../models';
+import { StatisticDto, TimePeriodDto, TournamentInfoDto, UserDto } from '../../models';
 import { UserService } from '../../user.service';
 import { Subscription } from 'rxjs';
 
@@ -34,9 +34,7 @@ export class StatistikPage implements OnInit, OnDestroy {
       this.user = user;
       if (user) {
         this.fetchTournamentInfo();
-/*
-        this.loadRankings();
-*/
+        this.loadRankings(); // Load rankings on init
       }
     });
   }
@@ -227,25 +225,17 @@ export class StatistikPage implements OnInit, OnDestroy {
     this.loadStatistics(this.currentWeek);
   }
 
-  /*loadRankings() {
+  loadRankings() {
     if (!this.user) {
       console.error('User not available');
       return;
     }
 
-    console.log('User ID:', this.user.id);
-    console.log('User Department ID:', this.user.dienstelle_id);
-    console.log('User Name:', this.user.name);
-
-    this.apiService.getRankingsGroupByDepartment(this.user.dienstelle_id).subscribe(
+    this.apiService.getStatisticsGroupByDepartment(this.user.dienstelle_id).subscribe(
       (statistics: StatisticDto[]) => {
-        console.log('Statistics from server:', JSON.stringify(statistics));
-
         const sortedStatistics = statistics.sort((a, b) => b.schritte - a.schritte);
-        console.log('Sorted statistics:', JSON.stringify(sortedStatistics));
 
         const userIndex = sortedStatistics.findIndex(stat => stat.mitarbeiter_id === this.user!.id);
-        console.log('User index:', userIndex);
 
         if (userIndex > -1) {
           this.position = userIndex + 1;
@@ -255,21 +245,11 @@ export class StatistikPage implements OnInit, OnDestroy {
           if (userIndex < sortedStatistics.length - 1) {
             this.differenceToBack = sortedStatistics[userIndex].schritte - sortedStatistics[userIndex + 1].schritte;
           }
-          console.log('User position:', this.position);
-          console.log('Difference to front:', this.differenceToFront);
-          console.log('Difference to back:', this.differenceToBack);
         }
       },
       error => {
-        console.error('Error fetching statistics', error);
+        console.error('Error fetching rankings', error);
       }
     );
   }
-
-*/
-
-
-
-
-
 }

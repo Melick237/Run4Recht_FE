@@ -27,11 +27,8 @@
   <h2 class="dienststelle">Position in der Dienststelle:</h2>
 
   <div class="position">
-    <span>6. +210</span>
-    <span class="middle">&larr; 7. &rarr;</span>
-    <span>8. -458</span>
-<!--    <span *ngIf="differenceToFront !== null">{{ position - 1 }}. +{{ differenceToFront }}</span>
+    <span *ngIf="differenceToFront !== null">{{ position - 1 }}. +{{ differenceToFront }}</span>
     <span class="middle">&larr; {{ position }}. &rarr;</span>
-    <span *ngIf="differenceToBack !== null">{{ position + 1 }}. -{{ differenceToBack }}</span>-->
+    <span *ngIf="differenceToBack !== null">{{ position + 1 }}. -{{ differenceToBack }}</span>
   </div>
 </ion-content>
