@@ -115,7 +115,7 @@ export class LoginPage implements OnInit {
     this.apiService.updateStatistic(statistic).subscribe(response => {
       console.log('Steps updated on server', response);
     }, error => {
-      console.error('Error updating steps on server', error);
+      console.error('Error updating steps on server', JSON.stringify(error) );
     });
   }
 

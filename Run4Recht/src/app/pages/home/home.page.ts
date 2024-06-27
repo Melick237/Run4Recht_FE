@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { StepsModalComponent } from '../../steps-modal/steps-modal.component';
 import { ApiService } from '../../api.service';
-import { StatisticDto, UserDto, TimePeriodDto } from '../../models';
+import {StatisticDto, UserDto, TimePeriodDto, TournamentInfoDto, ProfileDto} from '../../models';
 import { UserService } from '../../user.service';
 import { Subscription } from 'rxjs';
 
@@ -15,11 +15,13 @@ export class HomePage implements OnInit, OnDestroy {
   steps: number = 0;
   totalSteps: number = 10000;
   totalDistance: number = 0;
+  competitionDistance: number = 0;
   date1: string = '';
   date2: string = '';
   progress: number = 0;
   stepsLabel: string = '';
   userSubscription: Subscription | undefined;
+  profileSubscription: Subscription | undefined;
 
   constructor(
     private modalController: ModalController,
@@ -37,6 +39,7 @@ export class HomePage implements OnInit, OnDestroy {
       const user = this.userService.getUser();
       if (user) {
         this.loadTodayStatistics(user);
+        this.loadCompetitionStatistics(user);
       }
     });
 
@@ -45,10 +48,11 @@ export class HomePage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.setTodayDate();
-    this.calculateProgress();
     this.userSubscription = this.userService.user$.subscribe(user => {
       if (user) {
+        this.loadProfile(user);
         this.loadTodayStatistics(user);
+        this.loadCompetitionStatistics(user);
       }
     });
   }
@@ -56,6 +60,9 @@ export class HomePage implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
+    }
+    if (this.profileSubscription) {
+      this.profileSubscription.unsubscribe();
     }
   }
 
@@ -75,6 +82,18 @@ export class HomePage implements OnInit, OnDestroy {
     this.stepsLabel = `/ ${this.totalSteps.toLocaleString()}`;
   }
 
+  loadProfile(user: UserDto) {
+    this.profileSubscription = this.apiService.getProfile(user.id).subscribe(
+      (profile: ProfileDto) => {
+        this.totalSteps = profile.tagesziel;
+        this.calculateProgress();
+      },
+      error => {
+        console.error('Error loading profile', error);
+      }
+    );
+  }
+
   // Method to load today's statistics from the API
   loadTodayStatistics(user: UserDto) {
     console.log('Loading statistics for user:', user.id, user.email);
@@ -89,16 +108,42 @@ export class HomePage implements OnInit, OnDestroy {
     this.apiService.getStatisticsWithPeriod(user.id, timePeriod).subscribe(
       (data: StatisticDto[]) => {
         if (data && data.length > 0) {
-          console.log('line 84 Statistics data schritte:', data[0].schritte);
-          console.log('line 85 Statistics data schritte:', data[data.length-1].schritte);
-
           this.steps = data[0].schritte;
           this.totalDistance = data[0].strecke;
           this.calculateProgress(); // Recalculate progress with the new data
         }
       },
       error => {
-        console.error('line 94 Error loading statistics', error);
+        console.error('Error loading statistics', error);
+      }
+    );
+  }
+
+  // Method to load competition statistics from the API
+  loadCompetitionStatistics(user: UserDto) {
+    this.apiService.getTournamentInfo().subscribe(
+      (tournamentInfo: TournamentInfoDto) => {
+        const timePeriod: TimePeriodDto = {
+          von_datum: new Date(Date.UTC(new Date(tournamentInfo.datum_beginn).getFullYear(), new Date(tournamentInfo.datum_beginn).getMonth(), new Date(tournamentInfo.datum_beginn).getDate())).toISOString().split('T')[0],
+          bis_datum: new Date(Date.UTC(new Date(tournamentInfo.datum_ende).getFullYear(), new Date(tournamentInfo.datum_ende).getMonth(), new Date(tournamentInfo.datum_ende).getDate())).toISOString().split('T')[0],
+        };
+
+        this.apiService.getStatisticsWithPeriod(user.id, timePeriod).subscribe(
+          (data: StatisticDto[]) => {
+            if (data && data.length > 0) {
+              const totalSteps = data.reduce((sum, stat) => sum + stat.schritte, 0);
+              this.competitionDistance = Math.round(data.reduce((sum, stat) => sum + stat.strecke, 0));
+              console.log('Total steps for competition:', totalSteps);
+              console.log('Total distance for competition:', this.competitionDistance);
+            }
+          },
+          error => {
+            console.error('Error loading competition statistics', error);
+          }
+        );
+      },
+      error => {
+        console.error('Error loading tournament info', error);
       }
     );
   }
@@ -108,6 +153,7 @@ export class HomePage implements OnInit, OnDestroy {
     const user = this.userService.getUser();
     if (user) {
       this.loadTodayStatistics(user);
+      this.loadCompetitionStatistics(user);
     }
     event.target.complete();
   }

@@ -7,12 +7,16 @@ import { CourtDto, DepartmentDto, PeriodStatisticDto, RankingDto, StatisticDto, 
   providedIn: 'root'
 })
 export class ApiService {
+
   private baseUrl = 'http://localhost:8080/api'; // Base URL of your Spring Boot application
+  //private baseUrl = 'http://mux-team4.th-brandenburg.de:8080/api';
+  //private baseUrl = ''
 
   constructor(private http: HttpClient) {}
 
   // Authentication APIs
   login(userDto: UserDto): Observable<UserDto> {
+    console.log(`${this.baseUrl}/auth/login`)
     return this.http.post<UserDto>(`${this.baseUrl}/auth/login`, userDto);
   }
 

@@ -2,22 +2,24 @@
   <div class="date-container">
     <div class="home">Rangliste</div>
     <div class="wochen">
-      <ion-segment value="W1" mode="ios" class="segment-round">
-        <ion-segment-button class="segment-button" value="W1">W1</ion-segment-button>
-        <ion-segment-button class="segment-button" value="W2">W2</ion-segment-button>
-        <ion-segment-button class="segment-button" value="W3">W3</ion-segment-button>
-        <ion-segment-button class="segment-button" value="W4">W4</ion-segment-button>
-        <ion-segment-button class="segment-button" value="Gesamt">Gesamt</ion-segment-button>
+      <ion-segment [value]="currentWeek" (ionChange)="onSegmentChanged($event)" mode="ios" class="segment-round">
+        <ion-segment-button class="segment-button" *ngFor="let week of weekOptions" [value]="week">
+          {{ week }}
+        </ion-segment-button>
       </ion-segment>
     </div>
   </div>
 
   <ion-list>
-    <!--todo check if this is correct-->
-    <ion-item class="position" *ngFor="let ranking of rankings; let i = index" lines="none" (click)="onItemClick(i + 1)" [ngClass]="{'clicked': selectedItem === i + 1}">
+    <ion-item *ngFor="let ranking of rankings; let i = index" lines="none" (click)="onItemClick(i + 1)" [ngClass]="{'clicked': selectedItem === i + 1, 'user-department': isUserDepartment(ranking.dienstelle_id)}">
       <ion-label class="line">
         <span class="rangnumber">{{ i + 1 }}. </span>
-        <ion-icon name="ellipse-outline" class="icon"></ion-icon>
+        <ng-container [ngSwitch]="ranking.trend">
+          <ion-icon *ngSwitchCase="Trend.GLEICH" name="ellipse-outline" class="icon"></ion-icon>
+          <ion-icon *ngSwitchCase="Trend.VERBESSERT" name="arrow-up-outline" class="icon"></ion-icon>
+          <ion-icon *ngSwitchCase="Trend.VERSCHLECHTERT" name="arrow-down-outline" class="icon"></ion-icon>
+          <ion-icon *ngSwitchDefault name="ellipse-outline" class="icon"></ion-icon>
+        </ng-container>
         <span class="text">{{ ranking.dienstelle_name }}</span>
         <span class="number">{{ ranking.gesamt | number }}</span>
       </ion-label>

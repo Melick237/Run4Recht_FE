@@ -3,6 +3,12 @@ export enum Role {
   USER
 }
 
+export enum Trend {
+  GLEICH = 'GLEICH',
+  VERBESSERT = 'VERBESSERT',
+  VERSCHLECHTERT = 'VERSCHLECHTERT',
+}
+
 export interface CourtDto {
   id: number;
   name: string;
@@ -28,6 +34,7 @@ export interface RankingDto {
   dienstelle_name: string;
   gesamt: number;
   datum: string; // Use string for dates in TypeScript for easier serialization
+  trend: Trend; // Add the trend field
 }
 
 export interface StatisticDto {

@@ -4,6 +4,9 @@ const config: CapacitorConfig = {
   appId: 'io.ionic.starter',
   appName: 'Run4Recht',
   webDir: 'www',
+  server: {
+    cleartext: true
+  },
   plugins: {
     LocalNotifications: {
       smallIcon: 'ic_notification',

@@ -34,7 +34,7 @@
               </ion-col>
               <ion-col>
                 <ion-button fill="outline" class="klein" shape="round">
-                  <ion-select [(ngModel)]="height" placeholder="170 cm" toggleIcon="chevron-down-outline" class="height-select custom-toggle-icon">
+                  <ion-select [(ngModel)]="height" placeholder="170 cm" toggleIcon="chevron-down-outline" class="height-select custom-toggle-icon" (ionChange)="updateProfile()">
                     <ion-select-option *ngFor="let h of heights" [value]="h">
                       {{ h }} cm
                     </ion-select-option>
@@ -54,7 +54,7 @@
               </ion-col>
               <ion-col>
                 <ion-button fill="outline" class="klein" shape="round">
-                  <ion-select [(ngModel)]="stepLength" placeholder="060 cm" toggleIcon="chevron-down-outline" class="height-select custom-toggle-icon">
+                  <ion-select [(ngModel)]="stepLength" placeholder="060 cm" toggleIcon="chevron-down-outline" class="height-select custom-toggle-icon" (ionChange)="updateProfile()">
                     <ion-select-option *ngFor="let s of stepLengths" [value]="s">
                       {{ s }} cm
                     </ion-select-option>
@@ -70,19 +70,19 @@
         <div class="notification-item">
           <ion-icon name="notifications-outline" class="icon"></ion-icon>
           <ion-label class="label-text">Benachrichtigungen</ion-label>
-          <ion-toggle slot="end" [(ngModel)]="notificationsEnabled"></ion-toggle>
+          <ion-toggle slot="end" [(ngModel)]="notificationsEnabled" (ionChange)="updateProfile()"></ion-toggle>
           <br /><br />
         </div>
         <div class="notification-item">
           <ion-icon name="sunny-outline" class="icon"></ion-icon>
           <ion-label class="label-text">Nachtmodus</ion-label>
-          <ion-toggle slot="end" [(ngModel)]="nightModeEnabled"></ion-toggle>
+          <ion-toggle slot="end" [(ngModel)]="nightModeEnabled" (ionChange)="updateProfile()"></ion-toggle>
           <br /><br />
         </div>
         <div class="notification-item">
           <ion-icon name="reader-outline" class="icon"></ion-icon>
           <ion-label class="label-text">Manager-Ansicht</ion-label>
-          <ion-toggle slot="end" [(ngModel)]="managerViewEnabled"></ion-toggle>
+          <ion-toggle slot="end" [(ngModel)]="managerViewEnabled" (ionChange)="updateProfile()"></ion-toggle>
         </div>
 
       </ion-col>

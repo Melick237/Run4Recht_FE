@@ -2,6 +2,13 @@
 <network-security-config>
   <domain-config cleartextTrafficPermitted="true">
     <domain includeSubdomains="true">localhost</domain>
-    <domain includeSubdomains="true">192.168.0.101</domain>
+    <domain includeSubdomains="true">mux-team4.th-brandenburg.de</domain>
+    <domain includeSubdomains="true">192.168.0.101</domain> <!-- Example for local network testing -->
   </domain-config>
+  <debug-overrides>
+    <trust-anchors>
+      <certificates src="user"/>
+      <certificates src="system"/>
+    </trust-anchors>
+  </debug-overrides>
 </network-security-config>

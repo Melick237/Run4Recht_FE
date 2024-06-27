@@ -1,90 +1,94 @@
-.home{
-    margin-bottom: 10px;
-    font-size: 1.5em;
-    font-weight: bold;
-    margin-top: 20px;
-    text-align: center;
-    margin-bottom: 25px;
+.home {
+  margin-bottom: 10px;
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-top: 20px;
+  text-align: center;
+  margin-bottom: 25px;
 }
 
 .wochen {
-    display: flex;
-    justify-content: space-between; /* Optionnel: ajoute de l'espace entre les boutons */
-    width: 100%;
-  }
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
 
-  ion-segment.segment-round {
-    width: 100%;
-    justify-content: space-between;
-    background-color: transparent;
-    padding-bottom: 10px;
-  }
+ion-segment.segment-round {
+  width: 100%;
+  justify-content: space-between;
+  background-color: transparent;
+  padding-bottom: 10px;
+}
 
-.position{
-  --background: #1e612b;
+.position {
+  --background: #ffffff;
   --background-size: cover;
 }
 
-  ion-segment-button.segment-button {
-    flex: 1;
-    max-width: 10% !important; /* Ajuste la largeur des boutons */
-    margin: 0 2px; /* Espace entre les boutons */
-    border-radius: 20px; /* Bords arrondis */
-    --border-radius: 20px; /* Bords arrondis */
-    --background: #F6F6F6; /* Fond blanc par défaut */
-    --background-checked: #0B1463; /* Fond bleu quand sélectionné */
-    text-transform: initial;
-    --color: black; /* Couleur du texte non sélectionné */
-    --color-checked: rgb(255, 255, 255) !important; /* Couleur du texte quand sélectionné */
-    --indicator-color: transparent; /* Supprime l'indicateur */
-    --border-width: 0; /* Supprime les bordures verticales */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Ajoute une ombre */
-  }
+ion-segment-button.segment-button {
+  flex: 1;
+  max-width: 10% !important;
+  margin: 0 2px;
+  border-radius: 20px;
+  --border-radius: 20px;
+  --background: #F6F6F6;
+  --background-checked: #0B1463;
+  text-transform: initial;
+  --color: black;
+  --color-checked: rgb(255, 255, 255) !important;
+  --indicator-color: transparent;
+  --border-width: 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
 
-  ion-list {
-    margin-top: 20px;
-    font-size: 3em;
-    margin-left: -19px;
-    margin-right: -20px;
-  }
+ion-list {
+  margin-top: 20px;
+  font-size: 3em;
+  margin-left: -19px;
+  margin-right: -20px;
+}
 
-  ion-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid #ccc;
-  }
+ion-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #ccc;
+}
 
-  .line {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-  }
+.line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
 
-  .text {
-    flex: 1;
-    font-size: 1.6em;
-    padding-left: 40px;
-    align-items: flex-start;
-  }
+.text {
+  flex: 1;
+  font-size: 1.6em;
+  padding-left: 40px;
+  align-items: flex-start;
+}
 
-  .number {
-    text-align: right;
-    font-size: 1.6em;
-  }
-  .rangnumber {
-    font-weight: bold;
-    font-size: 2em;
-    padding-right: 10px;
-  }
+.number {
+  text-align: right;
+  font-size: 1.6em;
+}
 
-  .icon {
-    font-size: 1.6em;
-  }
+.rangnumber {
+  font-weight: bold;
+  font-size: 2em;
+  padding-right: 10px;
+}
 
-  .clicked {
-    background-color: lightgreen !important;
-  }
+.icon {
+  font-size: 1.6em;
+}
 
+.clicked {
+  background-color: lightgreen !important;
+}
 
+.user-department {
+  --background: #1e612b;
+  --color: #ffffff;
+}

@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../../api.service';
+import { UserService } from '../../user.service';
+import { ProfileDto, UserDto } from '../../models';
 
 @Component({
   selector: 'app-profil',
@@ -16,8 +19,10 @@ export class ProfilPage implements OnInit {
   heights: number[] = [];
   stepLengths: number[] = [];
 
-  constructor() {
-    // Génère une liste de tailles de 150 cm à 200 cm
+  user: UserDto | null = null;
+
+  constructor(private apiService: ApiService, private userService: UserService) {
+    // Generate a list of heights from 150 cm to 200 cm
     for (let i = 150; i <= 200; i++) {
       this.heights.push(i);
     }
@@ -27,28 +32,73 @@ export class ProfilPage implements OnInit {
   }
 
   ngOnInit() {
+    this.userService.user$.subscribe(user => {
+      this.user = user;
+      if (user) {
+        this.loadProfile(user.id);
+      }
+    });
   }
 
-  // Méthodes pour augmenter et diminuer la valeur de stepGoal
+  loadProfile(userId: number) {
+    this.apiService.getProfile(userId).subscribe(
+      (profile: ProfileDto) => {
+        this.stepGoal = profile.tagesziel;
+        this.height = profile.koerpergroesse;
+        this.stepLength = profile.schrittlaenge;
+        // You may need to map other profile fields to local variables if required
+      },
+      error => {
+        console.error('Error loading profile', error);
+      }
+    );
+  }
+
+  updateProfile() {
+    if (!this.user) {
+      console.error('User not available');
+      return;
+    }
+
+    const updatedProfile: ProfileDto = {
+      tagesziel: this.stepGoal,
+      koerpergroesse: this.height,
+      schrittlaenge: this.stepLength
+    };
+
+    this.apiService.updateProfile(this.user.id, updatedProfile).subscribe(
+      (profile: ProfileDto) => {
+        console.log('Profile updated successfully', profile);
+      },
+      error => {
+        console.error('Error updating profile', error);
+      }
+    );
+  }
+
+  // Methods to increase and decrease stepGoal
   increaseStepGoal() {
     this.stepGoal += 50;
+    this.updateProfile();
   }
 
   decreaseStepGoal() {
     if (this.stepGoal > 0) {
       this.stepGoal -= 50;
+      this.updateProfile();
     }
   }
 
-  // Méthode pour formater stepGoal pour affichage
+  // Method to format stepGoal for display
   get formattedStepGoal(): string {
     return this.stepGoal.toLocaleString('de-DE');
   }
 
-  // Méthode pour mettre à jour stepGoal depuis l'input
+  // Method to update stepGoal from input
   updateStepGoal(value: string | number | null | undefined) {
     if (typeof value === 'string') {
       this.stepGoal = parseInt(value.replace(/\./g, ''), 10) || 0;
+      this.updateProfile();
     }
   }
 }
