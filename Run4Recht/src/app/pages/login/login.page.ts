@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController, LoadingController, ToastController } from '@ionic/angular';
 import { ApiService } from '../../api.service';
 import { UserService } from '../../user.service';
-import {UserDto, Role, StatisticDto} from '../../models';
+import { UserDto, Role, StatisticDto } from '../../models';
 import { Storage } from '@ionic/storage-angular';
 import { NotificationService } from '../../notification.service';
-import {HealthService} from "../../health.service";
+import { HealthService } from '../../health.service';
 
 @Component({
   selector: 'app-login',
@@ -21,8 +21,10 @@ export class LoginPage implements OnInit {
     private apiService: ApiService,
     private userService: UserService,
     private storage: Storage,
-    private notificationService: NotificationService, // Inject the NotificationService
-    private healthService: HealthService
+    private notificationService: NotificationService,
+    private healthService: HealthService,
+    private loadingController: LoadingController, // Add LoadingController
+    private toastController: ToastController // Add ToastController
   ) {}
 
   async ngOnInit() {
@@ -30,7 +32,7 @@ export class LoginPage implements OnInit {
     const storedEmail = await this.storage.get('email');
     if (storedEmail) {
       this.email = storedEmail;
-      this.login();
+      // this.login();
     }
   }
 
@@ -40,10 +42,16 @@ export class LoginPage implements OnInit {
       this.login();
     } else {
       console.log('Veuillez entrer une adresse e-mail valide.');
+      this.presentToast('Bitte geben Sie eine gültige E-Mail-Adresse ein.', 'danger');
     }
   }
 
-  private login() {
+  private async login() {
+    const loading = await this.loadingController.create({
+      message: 'Bitte warten...',
+    });
+    await loading.present();
+
     const userDto: UserDto = {
       id: 0, // Placeholder ID, adjust as necessary
       name: '', // Placeholder name, adjust as necessary
@@ -52,22 +60,29 @@ export class LoginPage implements OnInit {
       dienstelle_id: 0, // Placeholder department ID, adjust as necessary
     };
 
-    this.apiService.login(userDto).subscribe((response: any) => {
-      console.log('Login successful:', response);
-      this.userService.setUser(response);
-      this.scheduleNotifications(); // Schedule notifications after login
-      this.initializeHealth();
-      this.navCtrl.navigateForward('/tabs/home'); // Navigate to the home page
-    }, (error: any) => {
-      console.error('Login failed:', error);
-    });
+    this.apiService.login(userDto).subscribe(
+      async (response: any) => {
+        console.log('Login successful:', response);
+        this.userService.setUser(response);
+        await this.scheduleNotifications(); // Schedule notifications after login
+        this.initializeHealth();
+        this.navCtrl.navigateForward('/tabs/home'); // Navigate to the home page
+        await loading.dismiss();
+        this.presentToast('Login erfolgreich!', 'success');
+      },
+      async (error: any) => {
+        console.error('Login failed:', error);
+        await loading.dismiss();
+        this.presentToast('Login fehlgeschlagen. Bitte versuchen Sie es erneut.', 'danger');
+      }
+    );
   }
 
-  private scheduleNotifications() {
-    this.notificationService.scheduleDailyReminder();
-    this.notificationService.scheduleTestNotification();
+  private async scheduleNotifications() {
+    await this.notificationService.checkPermission();
+    await this.notificationService.scheduleDailyReminder();
+    await this.notificationService.scheduleTestNotification();
   }
-
 
   initializeHealth() {
     console.log('Checking health availability...');
@@ -105,7 +120,7 @@ export class LoginPage implements OnInit {
     }
 
     const statistic: StatisticDto = {
-      id:null,
+      id: null,
       mitarbeiter_id: user.id,
       schritte: steps,
       strecke: this.calculateDistance(steps), // Add a method to calculate distance if needed
@@ -115,12 +130,21 @@ export class LoginPage implements OnInit {
     this.apiService.updateStatistic(statistic).subscribe(response => {
       console.log('Steps updated on server', response);
     }, error => {
-      console.error('Error updating steps on server', JSON.stringify(error) );
+      console.error('Error updating steps on server', JSON.stringify(error));
     });
   }
 
   calculateDistance(steps: number): number {
     const averageStepLength = 0.0008; // Average step length in km, adjust if necessary
     return steps * averageStepLength;
+  }
+
+  async presentToast(message: string, color: string) {
+    const toast = await this.toastController.create({
+      message,
+      color,
+      duration: 2000
+    });
+    toast.present();
   }
 }

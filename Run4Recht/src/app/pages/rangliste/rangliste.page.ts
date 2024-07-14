@@ -3,6 +3,7 @@ import { RankingDto, TimePeriodDto, TournamentInfoDto, Trend, UserDto } from "..
 import { ApiService } from "../../api.service";
 import { UserService } from '../../user.service';
 import { Subscription } from 'rxjs';
+import { LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-rangliste',
@@ -21,7 +22,11 @@ export class RanglistePage implements OnInit, OnDestroy {
   tournamentInfoSubscription: Subscription | undefined;
   user: UserDto | null = null;
 
-  constructor(private apiService: ApiService, private userService: UserService) { }
+  constructor(
+    private apiService: ApiService,
+    private userService: UserService,
+    private loadingController: LoadingController // Inject LoadingController
+  ) { }
 
   onItemClick(itemNumber: number) {
     this.selectedItem = itemNumber; // Update the selected item
@@ -43,16 +48,29 @@ export class RanglistePage implements OnInit, OnDestroy {
     }
   }
 
-  fetchTournamentInfo() {
+  async presentLoading(message: string) {
+    const loading = await this.loadingController.create({
+      message,
+      duration: 0, // Set duration to 0 to disable auto-hide
+      spinner: 'crescent'
+    });
+    await loading.present();
+    return loading;
+  }
+
+  async fetchTournamentInfo() {
+    const loading = await this.presentLoading('Loading tournament info...');
     this.tournamentInfoSubscription = this.apiService.getTournamentInfo().subscribe(
       (tournamentInfo: TournamentInfoDto) => {
         this.tournamentStartDate = new Date(tournamentInfo.datum_beginn);
         this.tournamentEndDate = new Date(tournamentInfo.datum_ende);
         this.currentWeek = 'Gesamt'/*this.getCurrentWeek();*/
         this.loadRankings();
+        loading.dismiss(); // Dismiss the loading spinner
       },
       error => {
         console.error('Error fetching tournament info', error);
+        loading.dismiss(); // Dismiss the loading spinner
       }
     );
   }
@@ -70,17 +88,18 @@ export class RanglistePage implements OnInit, OnDestroy {
     return weekNumber > 4 ? 'Gesamt' : `W${weekNumber}`;
   }
 
-  onSegmentChanged(event: any) {
+  async onSegmentChanged(event: any) {
     this.currentWeek = event.detail.value;
-    this.loadRankings();
+    await this.loadRankings();
   }
 
-  loadRankings() {
+  async loadRankings() {
     if (!this.tournamentStartDate || !this.tournamentEndDate) {
       console.error('Tournament dates not available');
       return;
     }
 
+    const loading = await this.presentLoading('Loading rankings...');
     let timePeriod: TimePeriodDto;
 
     if (this.currentWeek === 'Gesamt') {
@@ -102,11 +121,20 @@ export class RanglistePage implements OnInit, OnDestroy {
     this.apiService.getRankingsGroupByDepartmentWithPeriod(timePeriod).subscribe(
       (data: RankingDto[]) => {
         this.rankings = data;
+        loading.dismiss(); // Dismiss the loading spinner
       },
       error => {
         console.error('Error fetching rankings', error);
+        loading.dismiss(); // Dismiss the loading spinner
       }
     );
+  }
+
+  async doRefresh(event: any) {
+    const loading = await this.presentLoading('Refreshing data...');
+    await this.fetchTournamentInfo();
+    event.target.complete();
+    loading.dismiss();
   }
 
   isUserDepartment(departmentId: number): boolean {

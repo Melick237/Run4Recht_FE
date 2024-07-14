@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, LoadingController } from '@ionic/angular';
 import { StepsModalComponent } from '../../steps-modal/steps-modal.component';
 import { ApiService } from '../../api.service';
-import {StatisticDto, UserDto, TimePeriodDto, TournamentInfoDto, ProfileDto} from '../../models';
+import { StatisticDto, UserDto, TimePeriodDto, TournamentInfoDto, ProfileDto } from '../../models';
 import { UserService } from '../../user.service';
 import { Subscription } from 'rxjs';
 
@@ -26,7 +26,8 @@ export class HomePage implements OnInit, OnDestroy {
   constructor(
     private modalController: ModalController,
     private apiService: ApiService,
-    private userService: UserService
+    private userService: UserService,
+    private loadingController: LoadingController // Inject LoadingController
   ) {}
 
   async openStepsModal() {
@@ -82,20 +83,33 @@ export class HomePage implements OnInit, OnDestroy {
     this.stepsLabel = `/ ${this.totalSteps.toLocaleString()}`;
   }
 
-  loadProfile(user: UserDto) {
+  async presentLoading(message: string) {
+    const loading = await this.loadingController.create({
+      message,
+      duration: 0, // Set duration to 0 to disable auto-hide
+      spinner: 'crescent'
+    });
+    await loading.present();
+    return loading;
+  }
+
+  async loadProfile(user: UserDto) {
+    const loading = await this.presentLoading('Loading profile...');
     this.profileSubscription = this.apiService.getProfile(user.id).subscribe(
       (profile: ProfileDto) => {
         this.totalSteps = profile.tagesziel;
         this.calculateProgress();
+        loading.dismiss(); // Dismiss the loading spinner
       },
       error => {
         console.error('Error loading profile', error);
+        loading.dismiss(); // Dismiss the loading spinner
       }
     );
   }
 
-  // Method to load today's statistics from the API
-  loadTodayStatistics(user: UserDto) {
+  async loadTodayStatistics(user: UserDto) {
+    const loading = await this.presentLoading('Loading today\'s statistics...');
     console.log('Loading statistics for user:', user.id, user.email);
 
     const today = new Date().toISOString().split('T')[0];
@@ -112,15 +126,17 @@ export class HomePage implements OnInit, OnDestroy {
           this.totalDistance = data[0].strecke;
           this.calculateProgress(); // Recalculate progress with the new data
         }
+        loading.dismiss(); // Dismiss the loading spinner
       },
       error => {
         console.error('Error loading statistics', error);
+        loading.dismiss(); // Dismiss the loading spinner
       }
     );
   }
 
-  // Method to load competition statistics from the API
-  loadCompetitionStatistics(user: UserDto) {
+  async loadCompetitionStatistics(user: UserDto) {
+    const loading = await this.presentLoading('Loading competition statistics...');
     this.apiService.getTournamentInfo().subscribe(
       (tournamentInfo: TournamentInfoDto) => {
         const timePeriod: TimePeriodDto = {
@@ -136,24 +152,26 @@ export class HomePage implements OnInit, OnDestroy {
               console.log('Total steps for competition:', totalSteps);
               console.log('Total distance for competition:', this.competitionDistance);
             }
+            loading.dismiss(); // Dismiss the loading spinner
           },
           error => {
             console.error('Error loading competition statistics', error);
+            loading.dismiss(); // Dismiss the loading spinner
           }
         );
       },
       error => {
         console.error('Error loading tournament info', error);
+        loading.dismiss(); // Dismiss the loading spinner
       }
     );
   }
 
-  // Method to refresh the statistics when the user swipes down
-  doRefresh(event: any) {
+  async doRefresh(event: any) {
     const user = this.userService.getUser();
     if (user) {
-      this.loadTodayStatistics(user);
-      this.loadCompetitionStatistics(user);
+      await this.loadTodayStatistics(user);
+      await this.loadCompetitionStatistics(user);
     }
     event.target.complete();
   }

@@ -1,4 +1,8 @@
 <ion-content class="ion-padding">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingText="Pull to refresh" refreshingSpinner="circles"></ion-refresher-content>
+  </ion-refresher>
+
   <div class="date-container">
     <div class="home">Rangliste</div>
     <div class="wochen">

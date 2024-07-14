@@ -11,6 +11,9 @@ export class ApiService {
   private baseUrl = 'http://localhost:8080/api'; // Base URL of your Spring Boot application
   //private baseUrl = 'http://mux-team4.th-brandenburg.de:8080/api';
   //private baseUrl = ''
+  //private baseUrl = 'https://mux-team4.th-brandenburg.de:8443/api';
+  //private baseUrl = 'https://localhost:8443/api';
+
 
   constructor(private http: HttpClient) {}
 

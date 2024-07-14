@@ -4,6 +4,7 @@ import { ApiService } from '../../api.service';
 import { StatisticDto, TimePeriodDto, TournamentInfoDto, UserDto } from '../../models';
 import { UserService } from '../../user.service';
 import { Subscription } from 'rxjs';
+import { LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-statistik',
@@ -14,7 +15,7 @@ export class StatistikPage implements OnInit, OnDestroy {
   totalSteps: number = 0;
   averageSteps: number = 0;
   statistics: StatisticDto[] = [];
-  currentWeek: string = '';
+  currentWeek: string = 'Gesamt';
   tournamentStartDate: Date | null = null;
   tournamentEndDate: Date | null = null;
   weekOptions: string[] = ['W1', 'W2', 'W3', 'W4', 'Gesamt'];
@@ -25,16 +26,20 @@ export class StatistikPage implements OnInit, OnDestroy {
   differenceToFront: number | null = null;
   differenceToBack: number | null = null;
 
-  constructor(private apiService: ApiService, private userService: UserService) {
+  constructor(
+    private apiService: ApiService,
+    private userService: UserService,
+    private loadingController: LoadingController // Inject LoadingController
+  ) {
     Chart.register(...registerables);
   }
 
   ngOnInit() {
     this.userSubscription = this.userService.user$.subscribe(user => {
       this.user = user;
+      console.log(user)
       if (user) {
         this.fetchTournamentInfo();
-        this.loadRankings(); // Load rankings on init
       }
     });
   }
@@ -43,16 +48,33 @@ export class StatistikPage implements OnInit, OnDestroy {
     this.userSubscription?.unsubscribe();
   }
 
-  fetchTournamentInfo() {
+  async presentLoading(message: string) {
+    const loading = await this.loadingController.create({
+      message,
+      duration: 0, // Set duration to 0 to disable auto-hide
+      spinner: 'crescent'
+    });
+    await loading.present();
+    return loading;
+  }
+
+  async fetchTournamentInfo() {
+    const loading = await this.presentLoading('Loading tournament info...');
     this.apiService.getTournamentInfo().subscribe(
       (tournamentInfo: TournamentInfoDto) => {
+        console.log(tournamentInfo)
         this.tournamentStartDate = new Date(tournamentInfo.datum_beginn);
         this.tournamentEndDate = new Date(tournamentInfo.datum_ende);
         this.currentWeek = this.getCurrentWeek();
+        console.log(this.tournamentEndDate.toISOString(), " start  ", this.tournamentStartDate.toISOString())
+
         this.loadStatistics(this.currentWeek);
+        this.loadRankings(); // Load rankings on init
+        loading.dismiss(); // Dismiss the loading spinner
       },
       error => {
         console.error('Error fetching tournament info', error);
+        loading.dismiss(); // Dismiss the loading spinner
       }
     );
   }
@@ -70,12 +92,13 @@ export class StatistikPage implements OnInit, OnDestroy {
     return weekNumber > 4 ? 'Gesamt' : `W${weekNumber}`;
   }
 
-  loadStatistics(week: string) {
+  async loadStatistics(week: string) {
     if (!this.user) {
       console.error('User not available');
       return;
     }
 
+    const loading = await this.presentLoading('Loading statistics...');
     let timePeriod: TimePeriodDto;
     let startDate: Date;
     let endDate: Date;
@@ -103,9 +126,11 @@ export class StatistikPage implements OnInit, OnDestroy {
         this.statistics = this.fillMissingDates(startDate, endDate, data);
         this.calculateTotals();
         this.updateChart();
+        loading.dismiss(); // Dismiss the loading spinner
       },
       error => {
         console.error('Error fetching statistics', error);
+        loading.dismiss(); // Dismiss the loading spinner
       }
     );
   }
@@ -225,13 +250,20 @@ export class StatistikPage implements OnInit, OnDestroy {
     this.loadStatistics(this.currentWeek);
   }
 
-  loadRankings() {
-    if (!this.user) {
-      console.error('User not available');
+  async loadRankings() {
+    console.log(this.user, "||", this.tournamentStartDate, "||" ,this.tournamentEndDate)
+    if (!this.user || !this.tournamentStartDate || !this.tournamentEndDate) {
+      console.error('LINE 230 User or tournament dates not available');
       return;
     }
 
-    this.apiService.getStatisticsGroupByDepartment(this.user.dienstelle_id).subscribe(
+    const loading = await this.presentLoading('Loading rankings...');
+    const timePeriod: TimePeriodDto = {
+      von_datum: new Date(Date.UTC(this.tournamentStartDate.getFullYear(), this.tournamentStartDate.getMonth(), this.tournamentStartDate.getDate())).toISOString().split('T')[0],
+      bis_datum: new Date(Date.UTC(this.tournamentEndDate.getFullYear(), this.tournamentEndDate.getMonth(), this.tournamentEndDate.getDate())).toISOString().split('T')[0],
+    };
+
+    this.apiService.getStatisticsGroupByDepartmentWithPeriod(this.user.dienstelle_id, timePeriod).subscribe(
       (statistics: StatisticDto[]) => {
         const sortedStatistics = statistics.sort((a, b) => b.schritte - a.schritte);
 
@@ -246,10 +278,19 @@ export class StatistikPage implements OnInit, OnDestroy {
             this.differenceToBack = sortedStatistics[userIndex].schritte - sortedStatistics[userIndex + 1].schritte;
           }
         }
+        loading.dismiss(); // Dismiss the loading spinner
       },
       error => {
         console.error('Error fetching rankings', error);
+        loading.dismiss(); // Dismiss the loading spinner
       }
     );
+  }
+
+  async doRefresh(event: any) {
+    const loading = await this.presentLoading('Refreshing data...');
+    await this.fetchTournamentInfo();
+    event.target.complete();
+    loading.dismiss();
   }
 }

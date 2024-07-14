@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../api.service';
 import { UserService } from '../../user.service';
 import { ProfileDto, UserDto } from '../../models';
+import { LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-profil',
@@ -9,7 +10,6 @@ import { ProfileDto, UserDto } from '../../models';
   styleUrls: ['./profil.page.scss'],
 })
 export class ProfilPage implements OnInit {
-
   stepGoal: number = 10000;
   height: number = 170;
   stepLength: number = 60;
@@ -21,7 +21,11 @@ export class ProfilPage implements OnInit {
 
   user: UserDto | null = null;
 
-  constructor(private apiService: ApiService, private userService: UserService) {
+  constructor(
+    private apiService: ApiService,
+    private userService: UserService,
+    private loadingController: LoadingController // Inject LoadingController
+  ) {
     // Generate a list of heights from 150 cm to 200 cm
     for (let i = 150; i <= 200; i++) {
       this.heights.push(i);
@@ -40,26 +44,39 @@ export class ProfilPage implements OnInit {
     });
   }
 
-  loadProfile(userId: number) {
+  async presentLoading(message: string) {
+    const loading = await this.loadingController.create({
+      message,
+      duration: 0, // Set duration to 0 to disable auto-hide
+      spinner: 'crescent'
+    });
+    await loading.present();
+    return loading;
+  }
+
+  async loadProfile(userId: number) {
+    const loading = await this.presentLoading('Loading profile...');
     this.apiService.getProfile(userId).subscribe(
       (profile: ProfileDto) => {
         this.stepGoal = profile.tagesziel;
         this.height = profile.koerpergroesse;
         this.stepLength = profile.schrittlaenge;
-        // You may need to map other profile fields to local variables if required
+        loading.dismiss(); // Dismiss the loading spinner
       },
       error => {
         console.error('Error loading profile', error);
+        loading.dismiss(); // Dismiss the loading spinner
       }
     );
   }
 
-  updateProfile() {
+  async updateProfile() {
     if (!this.user) {
       console.error('User not available');
       return;
     }
 
+    const loading = await this.presentLoading('Updating profile...');
     const updatedProfile: ProfileDto = {
       tagesziel: this.stepGoal,
       koerpergroesse: this.height,
@@ -69,9 +86,11 @@ export class ProfilPage implements OnInit {
     this.apiService.updateProfile(this.user.id, updatedProfile).subscribe(
       (profile: ProfileDto) => {
         console.log('Profile updated successfully', profile);
+        loading.dismiss(); // Dismiss the loading spinner
       },
       error => {
         console.error('Error updating profile', error);
+        loading.dismiss(); // Dismiss the loading spinner
       }
     );
   }
