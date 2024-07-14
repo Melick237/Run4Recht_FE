@@ -18,7 +18,7 @@ export class StatistikPage implements OnInit, OnDestroy {
   currentWeek: string = 'Gesamt';
   tournamentStartDate: Date | null = null;
   tournamentEndDate: Date | null = null;
-  weekOptions: string[] = ['W1', 'W2', 'W3', 'W4', 'Gesamt'];
+  weekOptions: string[] = []; // Store available weeks
   chart: Chart | undefined;
   userSubscription: Subscription | undefined;
   user: UserDto | null = null;
@@ -65,6 +65,7 @@ export class StatistikPage implements OnInit, OnDestroy {
         console.log(tournamentInfo)
         this.tournamentStartDate = new Date(tournamentInfo.datum_beginn);
         this.tournamentEndDate = new Date(tournamentInfo.datum_ende);
+        this.updateWeekOptions(); // Update available weeks based on the current date
         this.currentWeek = this.getCurrentWeek();
         console.log(this.tournamentEndDate.toISOString(), " start  ", this.tournamentStartDate.toISOString())
 
@@ -77,6 +78,24 @@ export class StatistikPage implements OnInit, OnDestroy {
         loading.dismiss(); // Dismiss the loading spinner
       }
     );
+  }
+
+  updateWeekOptions() {
+    if (!this.tournamentStartDate || !this.tournamentEndDate) {
+      this.weekOptions = ['Gesamt'];
+      return;
+    }
+
+    const today = new Date();
+    const timeDiff = today.getTime() - this.tournamentStartDate.getTime();
+    const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+    const currentWeek = Math.floor(daysDiff / 7) + 1;
+
+    this.weekOptions = [];
+    for (let i = 1; i <= currentWeek; i++) {
+      this.weekOptions.push(`W${i}`);
+    }
+    this.weekOptions.push('Gesamt');
   }
 
   getCurrentWeek(): string {
@@ -253,7 +272,7 @@ export class StatistikPage implements OnInit, OnDestroy {
   async loadRankings() {
     console.log(this.user, "||", this.tournamentStartDate, "||" ,this.tournamentEndDate)
     if (!this.user || !this.tournamentStartDate || !this.tournamentEndDate) {
-      console.error('LINE 230 User or tournament dates not available');
+      console.error('User or tournament dates not available');
       return;
     }
 

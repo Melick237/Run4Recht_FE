@@ -1,10 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ModalController, LoadingController } from '@ionic/angular';
+import { ModalController, LoadingController, ToastController } from '@ionic/angular';
 import { StepsModalComponent } from '../../steps-modal/steps-modal.component';
 import { ApiService } from '../../api.service';
 import { StatisticDto, UserDto, TimePeriodDto, TournamentInfoDto, ProfileDto } from '../../models';
 import { UserService } from '../../user.service';
 import { Subscription } from 'rxjs';
+import { HealthService } from '../../health.service';
+import { Storage } from '@ionic/storage-angular';
 
 @Component({
   selector: 'app-home',
@@ -22,12 +24,16 @@ export class HomePage implements OnInit, OnDestroy {
   stepsLabel: string = '';
   userSubscription: Subscription | undefined;
   profileSubscription: Subscription | undefined;
+  stepsToday: number = -1;
 
   constructor(
     private modalController: ModalController,
     private apiService: ApiService,
     private userService: UserService,
-    private loadingController: LoadingController // Inject LoadingController
+    private loadingController: LoadingController,
+    private toastController: ToastController,
+    private healthService: HealthService,
+    private storage: Storage // Inject Storage
   ) {}
 
   async openStepsModal() {
@@ -47,13 +53,16 @@ export class HomePage implements OnInit, OnDestroy {
     return await modal.present();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    await this.storage.create();
     this.setTodayDate();
     this.userSubscription = this.userService.user$.subscribe(user => {
       if (user) {
-        this.loadProfile(user);
-        this.loadTodayStatistics(user);
-        this.loadCompetitionStatistics(user);
+        this.initializeHealth().then(() => {
+          this.loadProfile(user);
+          this.loadTodayStatistics(user);
+          this.loadCompetitionStatistics(user);
+        });
       }
     });
   }
@@ -170,9 +179,83 @@ export class HomePage implements OnInit, OnDestroy {
   async doRefresh(event: any) {
     const user = this.userService.getUser();
     if (user) {
+      await this.initializeHealth();
       await this.loadTodayStatistics(user);
       await this.loadCompetitionStatistics(user);
     }
     event.target.complete();
+  }
+
+  async initializeHealth() {
+    console.log('Checking health availability...');
+    const available = await this.healthService.isAvailable();
+    if (available) {
+      console.log('Health is available');
+      try {
+        await this.healthService.requestAuthorization();
+        console.log('Authorization granted');
+        await this.getTodaySteps();
+      } catch (e) {
+        console.log('Error requesting authorization', e);
+      }
+    } else {
+      console.log('Health is not available');
+    }
+  }
+
+  async getTodaySteps() {
+    const lastUploadDate = await this.storage.get('lastUploadDate');
+    const lastUploadSteps = await this.storage.get('lastUploadSteps');
+
+    const startDate = lastUploadDate ? new Date(lastUploadDate) : new Date();
+    startDate.setHours(0, 0, 0, 0); // Start of the last upload day or today
+    const endDate = new Date(); // Current time
+
+    try {
+      const steps = await this.healthService.querySteps(startDate, endDate);
+      const stepsSinceLastUpload = steps - (lastUploadSteps || 0);
+      this.stepsToday = stepsSinceLastUpload > 0 ? stepsSinceLastUpload : steps;
+      await this.updateStepsOnServer(stepsSinceLastUpload);
+      await this.storage.set('lastUploadDate', endDate.toISOString());
+      await this.storage.set('lastUploadSteps', steps);
+    } catch (e) {
+      console.log('Error querying steps', e);
+    }
+  }
+
+  async updateStepsOnServer(steps: number) {
+    const user = this.userService.getUser();
+    if (!user) {
+      console.error('User not logged in');
+      return;
+    }
+
+    const statistic: StatisticDto = {
+      id: null,
+      mitarbeiter_id: user.id,
+      schritte: steps,
+      strecke: this.calculateDistance(steps),
+      datum: new Date().toISOString().split('T')[0] // Format date as 'YYYY-MM-DD'
+    };
+
+    this.apiService.updateStatistic(statistic).subscribe(response => {
+      console.log('Steps updated on server', response);
+    }, error => {
+      console.error('Error updating steps on server', JSON.stringify(error));
+    });
+  }
+
+  calculateDistance(steps: number): number {
+    const averageStepLength = 0.0008; // Average step length in km, adjust if necessary
+    return steps * averageStepLength;
+  }
+
+  async presentToast(message: string, color: string) {
+    const toast = await this.toastController.create({
+      message,
+      color,
+      duration: 2000
+    });
+    toast.present();
   }
 }

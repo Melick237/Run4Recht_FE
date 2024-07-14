@@ -1,26 +1,32 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChildren, QueryList, ElementRef, AfterViewInit, ViewChild } from '@angular/core';
 import { RankingDto, TimePeriodDto, TournamentInfoDto, Trend, UserDto } from "../../models";
 import { ApiService } from "../../api.service";
 import { UserService } from '../../user.service';
 import { Subscription } from 'rxjs';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, IonContent } from '@ionic/angular';
 
 @Component({
   selector: 'app-rangliste',
   templateUrl: './rangliste.page.html',
   styleUrls: ['./rangliste.page.scss'],
 })
-export class RanglistePage implements OnInit, OnDestroy {
+export class RanglistePage implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChildren('rankingItem') rankingItems!: QueryList<ElementRef>;
+  @ViewChild('content', { static: false }) content!: IonContent;
+
   selectedItem: number = 3;
   rankings: RankingDto[] = []; // Store rankings data
   Trend = Trend; // Make the enum available in the template
   currentWeek: string = 'Gesamt';
   tournamentStartDate: Date | null = null;
   tournamentEndDate: Date | null = null;
-  weekOptions: string[] = ['W1', 'W2', 'W3', 'W4', 'Gesamt'];
+  weekOptions: string[] = []; // Store available weeks
   userSubscription: Subscription | undefined;
   tournamentInfoSubscription: Subscription | undefined;
   user: UserDto | null = null;
+  viewUpdated: boolean = false;
+  showScrollButton: boolean = false;
+  userScrolled: boolean = false;
 
   constructor(
     private apiService: ApiService,
@@ -37,6 +43,10 @@ export class RanglistePage implements OnInit, OnDestroy {
       this.user = user;
       this.fetchTournamentInfo();
     });
+  }
+
+  ngAfterViewInit() {
+    this.checkInitialVisibility();
   }
 
   ngOnDestroy() {
@@ -64,7 +74,8 @@ export class RanglistePage implements OnInit, OnDestroy {
       (tournamentInfo: TournamentInfoDto) => {
         this.tournamentStartDate = new Date(tournamentInfo.datum_beginn);
         this.tournamentEndDate = new Date(tournamentInfo.datum_ende);
-        this.currentWeek = 'Gesamt'/*this.getCurrentWeek();*/
+        this.updateWeekOptions(); // Update available weeks based on the current date
+        this.currentWeek = 'Gesamt';
         this.loadRankings();
         loading.dismiss(); // Dismiss the loading spinner
       },
@@ -75,17 +86,22 @@ export class RanglistePage implements OnInit, OnDestroy {
     );
   }
 
-  getCurrentWeek(): string {
+  updateWeekOptions() {
     if (!this.tournamentStartDate || !this.tournamentEndDate) {
-      return 'Gesamt';
+      this.weekOptions = ['Gesamt'];
+      return;
     }
 
     const today = new Date();
     const timeDiff = today.getTime() - this.tournamentStartDate.getTime();
     const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
-    const weekNumber = Math.floor(daysDiff / 7) + 1;
+    const currentWeek = Math.floor(daysDiff / 7) + 1;
 
-    return weekNumber > 4 ? 'Gesamt' : `W${weekNumber}`;
+    this.weekOptions = [];
+    for (let i = 1; i <= currentWeek; i++) {
+      this.weekOptions.push(`W${i}`);
+    }
+    this.weekOptions.push('Gesamt');
   }
 
   async onSegmentChanged(event: any) {
@@ -122,6 +138,8 @@ export class RanglistePage implements OnInit, OnDestroy {
       (data: RankingDto[]) => {
         this.rankings = data;
         loading.dismiss(); // Dismiss the loading spinner
+        this.scrollToUserDepartment();
+        this.checkInitialVisibility();
       },
       error => {
         console.error('Error fetching rankings', error);
@@ -139,5 +157,45 @@ export class RanglistePage implements OnInit, OnDestroy {
 
   isUserDepartment(departmentId: number): boolean {
     return this.user ? this.user.dienstelle_id === departmentId : false;
+  }
+
+  isUserDepartmentTop(): boolean {
+    const userRankingIndex = this.rankings.findIndex(ranking => ranking.dienstelle_id === this.user?.dienstelle_id);
+    return userRankingIndex !== -1 && userRankingIndex < 6;
+  }
+
+  scrollToUserDepartment() {
+    if (!this.user) return;
+
+    const userRankingIndex = this.rankings.findIndex(ranking => ranking.dienstelle_id === this.user!.dienstelle_id);
+
+    if (userRankingIndex !== -1) {
+      const userRankingItemId = 'ranking-item-' + userRankingIndex;
+      const userRankingItem = document.getElementById(userRankingItemId);
+
+      if (userRankingItem) {
+        const offsetTop = userRankingItem.offsetTop;
+        this.content.scrollToPoint(0, offsetTop - 100, 1000).then(() => {
+          this.showScrollButton = false;
+          this.userScrolled = false; // Reset user scrolled state after scrolling to the user department
+        });
+      }
+    }
+  }
+
+  onScroll(event: any) {
+    if (this.userScrolled) {
+      this.showScrollButton = true;
+    } else {
+      this.userScrolled = true;
+    }
+  }
+
+  checkInitialVisibility() {
+    if (this.isUserDepartmentTop()) {
+      this.showScrollButton = false;
+    } else {
+      this.showScrollButton = true;
+    }
   }
 }

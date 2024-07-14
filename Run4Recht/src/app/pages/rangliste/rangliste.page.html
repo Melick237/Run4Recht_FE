@@ -1,4 +1,4 @@
-<ion-content class="ion-padding">
+<ion-content class="ion-padding" #content (ionScroll)="onScroll($event)">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content pullingText="Pull to refresh" refreshingSpinner="circles"></ion-refresher-content>
   </ion-refresher>
@@ -15,7 +15,12 @@
   </div>
 
   <ion-list>
-    <ion-item *ngFor="let ranking of rankings; let i = index" lines="none" (click)="onItemClick(i + 1)" [ngClass]="{'clicked': selectedItem === i + 1, 'user-department': isUserDepartment(ranking.dienstelle_id)}">
+    <ion-item *ngFor="let ranking of rankings; let i = index"
+              lines="none"
+              (click)="onItemClick(i + 1)"
+              [ngClass]="{'clicked': selectedItem === i + 1, 'user-department': isUserDepartment(ranking.dienstelle_id)}"
+              [id]="'ranking-item-' + i"
+              #rankingItem>
       <ion-label class="line">
         <span class="rangnumber">{{ i + 1 }}. </span>
         <ng-container [ngSwitch]="ranking.trend">
@@ -29,4 +34,10 @@
       </ion-label>
     </ion-item>
   </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="showScrollButton">
+    <ion-fab-button (click)="scrollToUserDepartment()" color="primary">
+      <ion-icon name="arrow-down-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
