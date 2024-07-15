@@ -42,6 +42,14 @@
   transition: stroke-dasharray 0.3s;
 }
 
+.circle-overflow {
+  fill: none;
+  stroke: #0B1463; /* Red color for overflow */
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.3s;
+}
+
 .percentage {
   font-size: 0.5em;
   text-anchor: middle;

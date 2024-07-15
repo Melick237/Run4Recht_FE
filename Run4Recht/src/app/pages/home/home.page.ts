@@ -21,6 +21,7 @@ export class HomePage implements OnInit, OnDestroy {
   date1: string = '';
   date2: string = '';
   progress: number = 0;
+  overflowProgress: number = 0;
   stepsLabel: string = '';
   userSubscription: Subscription | undefined;
   profileSubscription: Subscription | undefined;
@@ -89,6 +90,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   calculateProgress() {
     this.progress = (this.steps / this.totalSteps) * 100;
+    this.overflowProgress = this.progress > 100 ? this.progress - 100 : 0;
+    this.progress = this.progress > 100 ? 100 : this.progress;
     this.stepsLabel = `/ ${this.totalSteps.toLocaleString()}`;
   }
 

@@ -220,7 +220,7 @@ export class StatistikPage implements OnInit, OnDestroy {
 
     uniqueStatistics.sort((a, b) => new Date(normalizeDate(a.datum)).getTime() - new Date(normalizeDate(b.datum)).getTime());
 
-    const labels = uniqueStatistics.map(stat => formatDate(normalizeDate(stat.datum)));
+    const labels = uniqueStatistics.map(stat => formatDate(normalizeDate(stat.datum)) + '.');
     const data = uniqueStatistics.map(stat => stat.schritte);
 
     if (this.chart) {

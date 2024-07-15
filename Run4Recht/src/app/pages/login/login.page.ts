@@ -29,6 +29,7 @@ export class LoginPage implements OnInit {
     const storedEmail = await this.storage.get('email');
     if (storedEmail) {
       this.email = storedEmail;
+      await this.login()
     }
   }
 
