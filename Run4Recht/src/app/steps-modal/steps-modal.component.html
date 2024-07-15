@@ -9,7 +9,7 @@
         </ion-datetime-button>
         <ion-modal [keepContentsMounted]="true">
           <ng-template>
-            <ion-datetime id="datetime" presentation="date" (ionChange)="onStartDateChange($event)"></ion-datetime>
+            <ion-datetime id="datetime" presentation="date" [multiple]="true" (ionChange)="onStartDateChange($event)"></ion-datetime>
           </ng-template>
         </ion-modal>
       </ion-button>
@@ -21,7 +21,7 @@
         </ion-datetime-button>
         <ion-modal [keepContentsMounted]="true">
           <ng-template>
-            <ion-datetime id="datetime2" presentation="date" (ionChange)="onEndDateChange($event)"></ion-datetime>
+            <ion-datetime id="datetime2" presentation="date" [multiple]="true" (ionChange)="onEndDateChange($event)"></ion-datetime>
           </ng-template>
         </ion-modal>
       </ion-button>

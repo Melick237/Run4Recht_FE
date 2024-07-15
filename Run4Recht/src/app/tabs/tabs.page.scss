@@ -1,1 +1,6 @@
 
+ion-tab-button {
+    &.selected {
+      border-top: 2px solid #0B1463; /* Blue border on the top of the selected tab button */
+    }
+  }
