@@ -7,9 +7,19 @@ import { Component } from '@angular/core';
 })
 export class TabsPage {
 
-  activeTab: string = 'home'; // Set the default active tab
+  activeTab: string = 'home'; // Default active tab is 'home'
 
-  constructor() {}
+  constructor() {
+    // Detect initial active tab based on the current URL or any other logic
+    const currentPath = window.location.pathname;
+    if (currentPath.includes('rangliste')) {
+      this.activeTab = 'rangliste';
+    } else if (currentPath.includes('statistik')) {
+      this.activeTab = 'statistik';
+    } else if (currentPath.includes('profil')) {
+      this.activeTab = 'profil';
+    }
+  }
 
   // Function to set the active tab
   setActiveTab(tab: string) {
