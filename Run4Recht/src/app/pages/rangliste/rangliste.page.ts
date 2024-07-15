@@ -27,6 +27,7 @@ export class RanglistePage implements OnInit, OnDestroy, AfterViewInit {
   viewUpdated: boolean = false;
   showScrollButton: boolean = false;
   userScrolled: boolean = false;
+  isLoading: boolean = false;
 
   constructor(
     private apiService: ApiService,
@@ -36,6 +37,13 @@ export class RanglistePage implements OnInit, OnDestroy, AfterViewInit {
 
   onItemClick(itemNumber: number) {
     this.selectedItem = itemNumber; // Update the selected item
+  }
+
+  loadData(segmentValue: string) {
+    this.isLoading = true; 
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 1000);
   }
 
   ngOnInit() {
