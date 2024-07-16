@@ -45,6 +45,10 @@ export class RanglistePage implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
+  ionViewWillEnter() {
+    this.loadRankings(); // Ensure rankings are reloaded when the tab is entered
+  }
+
   ngAfterViewInit() {
     this.checkInitialVisibility();
   }

@@ -68,6 +68,15 @@ export class HomePage implements OnInit, OnDestroy {
     });
   }
 
+  ionViewWillEnter() {
+    const user = this.userService.getUser();
+    if (user) {
+      this.loadProfile(user);
+      this.loadTodayStatistics(user);
+      this.loadCompetitionStatistics(user);
+    }
+  }
+
   ngOnDestroy() {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();

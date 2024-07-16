@@ -37,11 +37,16 @@ export class StatistikPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.userSubscription = this.userService.user$.subscribe(user => {
       this.user = user;
-      console.log(user)
       if (user) {
         this.fetchTournamentInfo();
       }
     });
+  }
+
+  ionViewWillEnter() {
+    if (this.user) {
+      this.fetchTournamentInfo();
+    }
   }
 
   ngOnDestroy() {
@@ -62,20 +67,19 @@ export class StatistikPage implements OnInit, OnDestroy {
     const loading = await this.presentLoading('Loading tournament info...');
     this.apiService.getTournamentInfo().subscribe(
       (tournamentInfo: TournamentInfoDto) => {
-        console.log(tournamentInfo)
         this.tournamentStartDate = new Date(tournamentInfo.datum_beginn);
         this.tournamentEndDate = new Date(tournamentInfo.datum_ende);
         this.updateWeekOptions(); // Update available weeks based on the current date
         this.currentWeek = this.getCurrentWeek();
-        console.log(this.tournamentEndDate.toISOString(), " start  ", this.tournamentStartDate.toISOString())
-
-        this.loadStatistics(this.currentWeek);
-        this.loadRankings(); // Load rankings on init
-        loading.dismiss(); // Dismiss the loading spinner
+        this.loadStatistics(this.currentWeek).then(() => {
+          this.loadRankings().then(() => {
+            loading.dismiss(); // Dismiss the loading spinner after both operations
+          });
+        });
       },
       error => {
         console.error('Error fetching tournament info', error);
-        loading.dismiss(); // Dismiss the loading spinner
+        loading.dismiss(); // Ensure spinner is dismissed on error
       }
     );
   }
@@ -140,18 +144,22 @@ export class StatistikPage implements OnInit, OnDestroy {
       };
     }
 
-    this.apiService.getStatisticsWithPeriod(this.user.id, timePeriod).subscribe(
-      (data: StatisticDto[]) => {
-        this.statistics = this.fillMissingDates(startDate, endDate, data);
-        this.calculateTotals();
-        this.updateChart();
-        loading.dismiss(); // Dismiss the loading spinner
-      },
-      error => {
-        console.error('Error fetching statistics', error);
-        loading.dismiss(); // Dismiss the loading spinner
-      }
-    );
+    return new Promise<void>((resolve, reject) => {
+      this.apiService.getStatisticsWithPeriod(this.user!.id, timePeriod).subscribe(
+        (data: StatisticDto[]) => {
+          this.statistics = this.fillMissingDates(startDate, endDate, data);
+          this.calculateTotals();
+          this.updateChart();
+          loading.dismiss(); // Dismiss the loading spinner
+          resolve(); // Resolve the promise
+        },
+        error => {
+          console.error('Error fetching statistics', error);
+          loading.dismiss(); // Ensure spinner is dismissed on error
+          reject(error); // Reject the promise
+        }
+      );
+    });
   }
 
   fillMissingDates(startDate: Date, endDate: Date, data: StatisticDto[]): StatisticDto[] {
@@ -270,7 +278,6 @@ export class StatistikPage implements OnInit, OnDestroy {
   }
 
   async loadRankings() {
-    console.log(this.user, "||", this.tournamentStartDate, "||" ,this.tournamentEndDate)
     if (!this.user || !this.tournamentStartDate || !this.tournamentEndDate) {
       console.error('User or tournament dates not available');
       return;
@@ -282,28 +289,32 @@ export class StatistikPage implements OnInit, OnDestroy {
       bis_datum: new Date(Date.UTC(this.tournamentEndDate.getFullYear(), this.tournamentEndDate.getMonth(), this.tournamentEndDate.getDate())).toISOString().split('T')[0],
     };
 
-    this.apiService.getStatisticsGroupByDepartmentWithPeriod(this.user.dienstelle_id, timePeriod).subscribe(
-      (statistics: StatisticDto[]) => {
-        const sortedStatistics = statistics.sort((a, b) => b.schritte - a.schritte);
+    return new Promise<void>((resolve, reject) => {
+      this.apiService.getStatisticsGroupByDepartmentWithPeriod(this.user!.dienstelle_id, timePeriod).subscribe(
+        (statistics: StatisticDto[]) => {
+          const sortedStatistics = statistics.sort((a, b) => b.schritte - a.schritte);
 
-        const userIndex = sortedStatistics.findIndex(stat => stat.mitarbeiter_id === this.user!.id);
+          const userIndex = sortedStatistics.findIndex(stat => stat.mitarbeiter_id === this.user!.id);
 
-        if (userIndex > -1) {
-          this.position = userIndex + 1;
-          if (userIndex > 0) {
-            this.differenceToFront = sortedStatistics[userIndex - 1].schritte - sortedStatistics[userIndex].schritte;
+          if (userIndex > -1) {
+            this.position = userIndex + 1;
+            if (userIndex > 0) {
+              this.differenceToFront = sortedStatistics[userIndex - 1].schritte - sortedStatistics[userIndex].schritte;
+            }
+            if (userIndex < sortedStatistics.length - 1) {
+              this.differenceToBack = sortedStatistics[userIndex].schritte - sortedStatistics[userIndex + 1].schritte;
+            }
           }
-          if (userIndex < sortedStatistics.length - 1) {
-            this.differenceToBack = sortedStatistics[userIndex].schritte - sortedStatistics[userIndex + 1].schritte;
-          }
+          loading.dismiss(); // Dismiss the loading spinner
+          resolve(); // Resolve the promise
+        },
+        error => {
+          console.error('Error fetching rankings', error);
+          loading.dismiss(); // Ensure spinner is dismissed on error
+          reject(error); // Reject the promise
         }
-        loading.dismiss(); // Dismiss the loading spinner
-      },
-      error => {
-        console.error('Error fetching rankings', error);
-        loading.dismiss(); // Dismiss the loading spinner
-      }
-    );
+      );
+    });
   }
 
   async doRefresh(event: any) {

@@ -76,7 +76,6 @@ export class ProfilPage implements OnInit {
       return;
     }
 
-    const loading = await this.presentLoading('Updating profile...');
     const updatedProfile: ProfileDto = {
       tagesziel: this.stepGoal,
       koerpergroesse: this.height,
@@ -86,11 +85,9 @@ export class ProfilPage implements OnInit {
     this.apiService.updateProfile(this.user.id, updatedProfile).subscribe(
       (profile: ProfileDto) => {
         console.log('Profile updated successfully', profile);
-        loading.dismiss(); // Dismiss the loading spinner
       },
       error => {
         console.error('Error updating profile', error);
-        loading.dismiss(); // Dismiss the loading spinner
       }
     );
   }
