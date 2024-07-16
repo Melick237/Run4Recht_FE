@@ -1,4 +1,7 @@
 <ion-content class="ion-padding" #content (ionScroll)="onScroll($event)">
+  <div class="spinner-container" *ngIf="isLoading">
+    <ion-spinner name="bubbles" class="spinner"></ion-spinner>
+  </div>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content pullingText="Pull to refresh" refreshingSpinner="circles"></ion-refresher-content>
   </ion-refresher>
@@ -7,7 +10,7 @@
     <div class="home">Rangliste</div>
     <div class="wochen">
       <ion-segment [value]="currentWeek" (ionChange)="onSegmentChanged($event)" mode="ios" class="segment-round">
-        <ion-segment-button class="segment-button" *ngFor="let week of weekOptions" [value]="week">
+        <ion-segment-button class="segment-button" *ngFor="let week of weekOptions" [value]="week" (click)="loadData('week')">
           {{ week }}
         </ion-segment-button>
       </ion-segment>
