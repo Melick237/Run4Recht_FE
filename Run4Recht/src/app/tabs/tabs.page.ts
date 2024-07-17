@@ -1,16 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss']
 })
-export class TabsPage {
+export class TabsPage implements OnInit {
+  activeTab: string = 'home';
+  managerEnabled = false;
 
-  activeTab: string = 'home'; // Default active tab is 'home'
-
-  constructor() {
-    // Detect initial active tab based on the current URL or any other logic
+  constructor(private userService: UserService) {
     const currentPath = window.location.pathname;
     if (currentPath.includes('rangliste')) {
       this.activeTab = 'rangliste';
@@ -21,9 +21,14 @@ export class TabsPage {
     }
   }
 
-  // Function to set the active tab
+  ngOnInit() {
+    this.userService.managerViewEnabled$.subscribe((enabled: any) => {
+      this.managerEnabled = enabled;
+      this.activeTab = enabled ? 'home-manager' : 'home';
+    });
+  }
+
   setActiveTab(tab: string) {
     this.activeTab = tab;
   }
-
 }

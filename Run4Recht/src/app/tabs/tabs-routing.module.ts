@@ -12,6 +12,10 @@ const routes: Routes = [
         loadChildren: () => import('../pages/home/home.module').then(m => m.HomePageModule)
       },
       {
+        path: 'home-manager',
+        loadChildren: () => import('../pages/home-manager/home-manager.module').then(m => m.HomeManagerPageModule)
+      },
+      {
         path: 'rangliste',
         loadChildren: () => import('../pages/rangliste/rangliste.module').then(m => m.RanglistePageModule)
       },
