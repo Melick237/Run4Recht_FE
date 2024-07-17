@@ -6,7 +6,8 @@
   <div class="date-container">
     <div class="home">Statistik</div>
 
-    <h2 class="dienststelle">Position in der Dienststelle:</h2>
+    <h2 class="dienststelle">Position in der Dienststelle <ion-icon name="information-circle-outline"
+        (click)="openModal()"></ion-icon></h2>
 
     <div class="position">
       <span *ngIf="differenceToFront !== null"><strong>{{ position - 1 }}.</strong> (+{{ differenceToFront }})</span>
@@ -35,5 +36,16 @@
 
   <div class="chart-container">
     <canvas id="myChart"></canvas>
+  </div>
+
+  <!-- InfoModal -->
+  <div id="infoModal" class="modal" (click)="closeModal($event)">
+    <div class="modal-content">
+      <span class="close" (click)="closeModal($event)">&times;</span>
+      <p>Ihre aktuelle Position in der Rangliste ihrer Dienststelle: <span class="bold">7. Platz</span>.</p>
+      <p>Sie haben <span class="italique">70 </span> Schritte Vorsprung auf den <span class="bold">8. Platz</span> und
+        benötigen <span class="italique">210 </span> Schritte, um den <span class="bold">6. Platz</span> zu erreichen.
+      </p>
+    </div>
   </div>
 </ion-content>
