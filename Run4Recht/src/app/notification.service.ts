@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LocalNotifications } from '@capacitor/local-notifications';
+import { App } from '@capacitor/app';
 import { ApiService } from './api.service';
 import { TimePeriodDto, StatisticDto, TournamentInfoDto, UserDto } from './models';
 import { UserService } from "./user.service";
@@ -72,6 +73,10 @@ export class NotificationService {
     await this.storage.set('notificationsEnabled', enable);
   }
 
+  public async openNotificationSettings() {
+    //await App.openAppSettings();
+  }
+
   async cancelAllNotifications() {
     const pending = await this.getPendingNotifications();
     const notificationIds = pending.notifications.map(notification => notification.id);
@@ -88,7 +93,7 @@ export class NotificationService {
           id: 1,
           schedule: {
             on: {
-              hour: 18,
+              hour: 12,
               minute: 30,
             },
             repeats: true

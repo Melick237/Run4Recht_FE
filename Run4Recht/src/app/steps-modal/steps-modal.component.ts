@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { ApiService } from '../api.service';
 import { UserService } from '../user.service';
@@ -9,7 +9,8 @@ import { StatisticDto } from '../models';
   templateUrl: './steps-modal.component.html',
   styleUrls: ['./steps-modal.component.scss'],
 })
-export class StepsModalComponent {
+export class StepsModalComponent implements OnInit {
+  @Input() userId?: number;  // Optional input for userId
   startDate: string = new Date().toISOString().split('T')[0];
   endDate: string = new Date().toISOString().split('T')[0];
   steps: number = 0;
@@ -20,12 +21,23 @@ export class StepsModalComponent {
     private userService: UserService
   ) {}
 
-  dismiss() {
-    this.modalController.dismiss();
+  ngOnInit() {
+    if (!this.userId) {
+      const user = this.userService.getUser();
+      if (user) {
+        this.userId = user.id;
+      } else {
+        console.error('No user ID available');
+        this.dismiss(false);
+      }
+    }
+  }
+
+  dismiss(dataSaved: boolean = false) {
+    this.modalController.dismiss(dataSaved);
   }
 
   onStartDateChange(event: any) {
-    console.log("event start date ", event.detail.startDate, event.detail.value)
     this.startDate = event.detail.value;
   }
 
@@ -34,26 +46,25 @@ export class StepsModalComponent {
   }
 
   saveSteps() {
-    const user = this.userService.getUser();
-    if (!user) {
-      console.error('Line 38 User not logged in');
+    if (!this.userId) {
+      console.error('User ID not available');
       return;
     }
-    console.log("line 41 date", this.startDate)
 
     const statistic: StatisticDto = {
       id: null,
-      mitarbeiter_id: user.id,
+      mitarbeiter_id: this.userId,  // Use the userId determined in ngOnInit
       schritte: this.steps,
       strecke: this.calculateDistance(this.steps),
       datum: this.startDate // Use the start date as the date for this statistic
     };
 
     this.apiService.updateStatistic(statistic).subscribe(response => {
-      console.log('Line 51 Steps updated successfully:', response);
-      this.modalController.dismiss();
+      console.log('Steps updated successfully:', response);
+      this.dismiss(true); // Indicate that data was saved
     }, error => {
-      console.error('Line 54 Error updating steps:', error);
+      console.error('Error updating steps:', error);
+      this.dismiss(false); // Indicate that data was not saved
     });
   }
 

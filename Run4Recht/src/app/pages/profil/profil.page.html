@@ -96,10 +96,10 @@
           <ion-toggle slot="end" [(ngModel)]="nightModeEnabled" (ionChange)="toggleNightMode()"></ion-toggle>
           <br /><br />
         </div>
-        <div class="notification-item">
+        <div class="notification-item" *ngIf="isAdmin">
           <ion-icon name="reader-outline" class="icon"></ion-icon>
           <ion-label class="label-text">Manager-Ansicht</ion-label>
-            <ion-toggle slot="end" [(ngModel)]="managerViewEnabled" (ionChange)="toggleManagerView()"></ion-toggle>
+          <ion-toggle slot="end" [(ngModel)]="managerViewEnabled" (ionChange)="toggleManagerView()"></ion-toggle>
         </div>
       </ion-col>
     </ion-row>

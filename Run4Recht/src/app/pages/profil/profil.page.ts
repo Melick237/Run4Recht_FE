@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../api.service';
-import { UserService } from '../../user.service';
-import { ProfileDto, UserDto } from '../../models';
-import { LoadingController, AlertController } from '@ionic/angular';
-import { NotificationService } from '../../notification.service';
+import {Component, OnInit} from '@angular/core';
+import {ApiService} from '../../api.service';
+import {UserService} from '../../user.service';
+import {ProfileDto, Role, UserDto} from '../../models';
+import {AlertController, LoadingController} from '@ionic/angular';
+import {NotificationService} from '../../notification.service';
 
 @Component({
   selector: 'app-profil',
@@ -19,6 +19,7 @@ export class ProfilPage implements OnInit {
   managerViewEnabled: boolean = false;
   heights: number[] = [];
   stepLengths: number[] = [];
+  isAdmin: boolean = false;
 
   user: UserDto | null = null;
 
@@ -41,18 +42,22 @@ export class ProfilPage implements OnInit {
     this.userService.user$.subscribe(user => {
       this.user = user;
       if (user) {
+        console.log(user.role, user.role.toLocaleString(), Role.ADMIN.valueOf(),  (user.role.toLocaleString() === "ADMIN"))
+        this.isAdmin = (user.role.toLocaleString() === "ADMIN");
+        console.log(this.isAdmin)
+
         this.loadProfile(user.id);
+
+        // Load the manager view state from local storage
+        const savedManagerViewEnabled = localStorage.getItem('managerViewEnabled');
+        if (savedManagerViewEnabled !== null) {
+          this.managerViewEnabled = JSON.parse(savedManagerViewEnabled);
+        }
       }
     });
     this.notificationService.notificationsEnabled$.subscribe(enabled => {
       this.notificationsEnabled = enabled;
     });
-
-    // Load the manager view state from local storage
-    const savedManagerViewEnabled = localStorage.getItem('managerViewEnabled');
-    if (savedManagerViewEnabled !== null) {
-      this.managerViewEnabled = JSON.parse(savedManagerViewEnabled);
-    }
   }
 
   async presentLoading(message: string) {
@@ -141,8 +146,6 @@ export class ProfilPage implements OnInit {
   }
 
   async toggleManagerView() {
-    //this.managerViewEnabled = !this.managerViewEnabled;
     this.userService.setManagerView(this.managerViewEnabled);
-    //window.location.reload(); // Reload to apply the changes
   }
 }

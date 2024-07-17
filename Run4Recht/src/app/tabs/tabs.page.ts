@@ -24,7 +24,6 @@ export class TabsPage implements OnInit {
   ngOnInit() {
     this.userService.managerViewEnabled$.subscribe((enabled: any) => {
       this.managerEnabled = enabled;
-      this.activeTab = enabled ? 'home-manager' : 'home';
     });
   }
 
