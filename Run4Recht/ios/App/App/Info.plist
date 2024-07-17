@@ -49,5 +49,24 @@
     <string>The RunForRecht App need access to your health data to track your fitness activities.</string>
     <key>NSHealthUpdateUsageDescription</key>
     <string>The RunForRecht App need access to update your health data to track your fitness activities.</string>
+
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+        <key>NSExceptionDomains</key>
+        <dict>
+            <key>muxteam4.de</key>
+            <dict>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+                <key>NSTemporaryExceptionAllowsInsecureHTTPSLoads</key>
+                <false/>
+                <key>NSTemporaryExceptionMinimumTLSVersion</key>
+                <string>TLSv1.0</string>
+            </dict>
+        </dict>
+    </dict>
+
 </dict>
 </plist>
