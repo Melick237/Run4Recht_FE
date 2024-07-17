@@ -7,6 +7,7 @@ import { UserService } from '../../user.service';
 import { Subscription } from 'rxjs';
 import { HealthService } from '../../health.service';
 import { Storage } from '@ionic/storage-angular';
+import { Utils } from 'src/app/utils/Utils';
 
 @Component({
   selector: 'app-home',
@@ -160,9 +161,10 @@ export class HomePage implements OnInit, OnDestroy {
     const loading = await this.presentLoading('Loading competition statistics...');
     this.apiService.getTournamentInfo().subscribe(
       (tournamentInfo: TournamentInfoDto) => {
+        // fix: parse date error 
         const timePeriod: TimePeriodDto = {
-          von_datum: new Date(Date.UTC(new Date(tournamentInfo.datum_beginn).getFullYear(), new Date(tournamentInfo.datum_beginn).getMonth(), new Date(tournamentInfo.datum_beginn).getDate())).toISOString().split('T')[0],
-          bis_datum: new Date(Date.UTC(new Date(tournamentInfo.datum_ende).getFullYear(), new Date(tournamentInfo.datum_ende).getMonth(), new Date(tournamentInfo.datum_ende).getDate())).toISOString().split('T')[0],
+          von_datum: Utils.normalizeDate(tournamentInfo.datum_beginn),
+          bis_datum: Utils.normalizeDate(tournamentInfo.datum_ende)
         };
 
         this.apiService.getStatisticsWithPeriod(user.id, timePeriod).subscribe(

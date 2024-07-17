@@ -5,6 +5,7 @@ import { StatisticDto, TimePeriodDto, TournamentInfoDto, UserDto } from '../../m
 import { UserService } from '../../user.service';
 import { Subscription } from 'rxjs';
 import { LoadingController } from '@ionic/angular';
+import { Utils } from 'src/app/utils/Utils';
 
 @Component({
   selector: 'app-statistik',
@@ -67,8 +68,8 @@ export class StatistikPage implements OnInit, OnDestroy {
     const loading = await this.presentLoading('Loading tournament info...');
     this.apiService.getTournamentInfo().subscribe(
       (tournamentInfo: TournamentInfoDto) => {
-        this.tournamentStartDate = new Date(tournamentInfo.datum_beginn);
-        this.tournamentEndDate = new Date(tournamentInfo.datum_ende);
+        this.tournamentStartDate = new Date(Utils.normalizeDate(tournamentInfo.datum_beginn));
+        this.tournamentEndDate = new Date(Utils.normalizeDate(tournamentInfo.datum_ende));
         this.updateWeekOptions(); // Update available weeks based on the current date
         this.currentWeek = this.getCurrentWeek();
         this.loadStatistics(this.currentWeek).then(() => {
