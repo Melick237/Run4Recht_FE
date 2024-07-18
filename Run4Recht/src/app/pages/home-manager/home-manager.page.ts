@@ -87,7 +87,7 @@ export class HomeManagerPage implements OnInit, OnDestroy {
     if (this.filter === 'tournament') {
       timePeriod = {
         von_datum: Utils.normalizeDate(this.tournamentStartDate),
-        bis_datum: Utils.normalizeDate(this.tournamentEndDate)
+        bis_datum: new Date(Date.now()).toISOString().split('T')[0], // Set bis_datum to today's date
       };
     } else {
       const today = new Date().toISOString().split('T')[0];
@@ -97,7 +97,7 @@ export class HomeManagerPage implements OnInit, OnDestroy {
       };
     }
 
-    this.apiService.getStatisticsGroupByDepartmentWithPeriod(this.user.dienstelle_id, timePeriod).subscribe(
+    this.apiService.getStatisticsGroupByDepartmentWithPeriodAll(this.user.dienstelle_id, timePeriod).subscribe(
       (statistics: StatisticDto[]) => {
         this.rankings = statistics.sort((a, b) => b.schritte - a.schritte);
         this.isLoading = false;

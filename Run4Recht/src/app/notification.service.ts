@@ -47,10 +47,11 @@ export class NotificationService {
         this.user = user;
         if (user) {
           this.fetchTournamentInfo();
+
         }
       });
-      await this.scheduleDailyReminder();
-      await this.scheduleTestNotification();
+      // await this.scheduleDailyReminder();
+      // await this.scheduleTestNotification();
     } else {
       await this.requestPermission();
     }
@@ -140,10 +141,12 @@ export class NotificationService {
   }
 
   async loadRankings(): Promise<number> {
+    console.log("143 noti load ranking")
     if (!this.tournamentStartDate || !this.tournamentEndDate) {
       console.error('User or tournament dates not available');
       return -1;
     }
+    console.log("148 noti passed start date")
 
     const timePeriod: TimePeriodDto = {
       von_datum: new Date(Date.UTC(this.tournamentStartDate.getFullYear(), this.tournamentStartDate.getMonth(), this.tournamentStartDate.getDate())).toISOString().split('T')[0],
@@ -153,6 +156,7 @@ export class NotificationService {
     try {
       const statistics: StatisticDto[] | undefined = await this.apiService.getStatisticsGroupByDepartmentWithPeriod(this.user!.dienstelle_id, timePeriod).toPromise();
       const sortedStatistics = statistics!.sort((a, b) => b.schritte - a.schritte);
+      console.log("158 noti should set all the stuff")
 
       const userIndex = sortedStatistics.findIndex(stat => stat.mitarbeiter_id === this.user!.id);
 
@@ -170,13 +174,14 @@ export class NotificationService {
 
         this.differenceToFront = Math.abs(differenceToBack);
         this.differenceToBack = Math.abs(differenceToFront);
+        console.log("176 noti before return", this.differenceToFront, "  ",this.differenceToBack)
 
         return Math.min(this.differenceToFront, this.differenceToBack);
       }
     } catch (error) {
       console.error('Error fetching rankings', error);
     }
-    return 0;
+    return Math.min(this.differenceToFront, this.differenceToBack);
   }
 
   async fetchTournamentInfo() {
@@ -185,12 +190,16 @@ export class NotificationService {
       this.tournamentStartDate = new Date(tournamentInfo!.datum_beginn);
       this.tournamentEndDate = new Date(tournamentInfo!.datum_ende);
       await this.loadRankings();
+      await this.scheduleDailyReminder();
+      await this.scheduleTestNotification();
     } catch (error) {
       console.error('Error fetching tournament info', error);
     }
   }
 
   private getMotivationalMessage(): { title: string, body: string } {
+    console.log("198 noti moti before return", this.differenceToFront, "  ",this.differenceToBack)
+
     const positionMessage = `Sie befinden sich aktuell auf Platz ${this.position}.`;
     const differenceToFrontMessage = `Sie sind nur ${this.differenceToFront} Schritte hinter dem nächsten Platz.`;
     const differenceToBackMessage = `Sie haben einen Vorsprung von ${this.differenceToBack} Schritten auf den nächsten Platz.`;

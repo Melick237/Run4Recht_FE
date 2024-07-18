@@ -77,6 +77,7 @@ export class StatistikPage implements OnInit, OnDestroy {
             loading.dismiss(); // Dismiss the loading spinner after both operations
           });
         });
+        loading.dismiss(); // Dismiss the loading spinner
       },
       error => {
         console.error('Error fetching tournament info', error);

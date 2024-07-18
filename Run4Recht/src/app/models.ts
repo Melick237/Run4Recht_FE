@@ -43,6 +43,7 @@ export interface StatisticDto {
   schritte: number;
   strecke: number;
   datum: string; // Use string for dates in TypeScript for easier serialization
+  name?: string;
 }
 
 export interface TimePeriodDto {

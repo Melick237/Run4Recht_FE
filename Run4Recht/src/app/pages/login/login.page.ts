@@ -76,8 +76,8 @@ export class LoginPage implements OnInit {
 
   private async scheduleNotifications() {
     await this.notificationService.checkPermission();
-    await this.notificationService.scheduleDailyReminder();
-    await this.notificationService.scheduleTestNotification();
+    // await this.notificationService.scheduleDailyReminder();
+    // await this.notificationService.scheduleTestNotification();
   }
 
   async presentToast(message: string, color: string) {

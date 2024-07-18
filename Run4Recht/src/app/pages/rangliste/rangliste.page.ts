@@ -5,6 +5,7 @@ import { UserService } from '../../user.service';
 import { Subscription } from 'rxjs';
 import { LoadingController, IonContent } from '@ionic/angular';
 import { Utils } from 'src/app/utils/Utils';
+import {time} from "ionicons/icons";
 
 @Component({
   selector: 'app-rangliste',
@@ -41,7 +42,7 @@ export class RanglistePage implements OnInit, OnDestroy, AfterViewInit {
   }
 
   loadData(segmentValue: string) {
-    this.isLoading = true; 
+    this.isLoading = true;
     setTimeout(() => {
       this.isLoading = false;
     }, 1000);
@@ -134,8 +135,9 @@ export class RanglistePage implements OnInit, OnDestroy, AfterViewInit {
     if (this.currentWeek === 'Gesamt') {
       timePeriod = {
         von_datum: new Date(Date.UTC(this.tournamentStartDate.getFullYear(), this.tournamentStartDate.getMonth(), this.tournamentStartDate.getDate())).toISOString().split('T')[0],
-        bis_datum: new Date(Date.UTC(this.tournamentEndDate.getFullYear(), this.tournamentEndDate.getMonth(), this.tournamentEndDate.getDate())).toISOString().split('T')[0],
+        bis_datum: new Date(Date.now()).toISOString().split('T')[0], // Set bis_datum to today's date
       };
+
     } else {
       const weekNumber = parseInt(this.currentWeek.replace('W', ''), 10) - 1;
       const startDate = new Date(Date.UTC(this.tournamentStartDate.getFullYear(), this.tournamentStartDate.getMonth(), this.tournamentStartDate.getDate() + weekNumber * 7));
@@ -147,6 +149,7 @@ export class RanglistePage implements OnInit, OnDestroy, AfterViewInit {
       };
     }
 
+    console.log(timePeriod.von_datum ,"     ", timePeriod.bis_datum)
     this.apiService.getRankingsGroupByDepartmentWithPeriod(timePeriod).subscribe(
       (data: RankingDto[]) => {
         this.rankings = data;

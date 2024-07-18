@@ -11,7 +11,7 @@
     <ion-list>
       <ion-item *ngFor="let ranking of rankings; let i = index" (click)="openStepsModal(ranking.mitarbeiter_id)">
         <ion-label>
-          <h2>{{ i + 1 }}. Mitarbeiter ID: {{ ranking.mitarbeiter_id }}</h2>
+          <h2>{{ i + 1 }}. {{ ranking.name }}</h2>
           <p>Schritte: {{ ranking.schritte }}</p>
         </ion-label>
       </ion-item>

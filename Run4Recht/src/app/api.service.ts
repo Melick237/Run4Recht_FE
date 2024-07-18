@@ -63,6 +63,10 @@ export class ApiService {
     return this.http.post<StatisticDto[]>(`${this.baseUrl}/statistiken/dienstellen/${departmentId}/zeitraum`, timePeriodDto);
   }
 
+  getStatisticsGroupByDepartmentWithPeriodAll(departmentId: number, timePeriodDto: TimePeriodDto): Observable<StatisticDto[]> {
+    return this.http.post<StatisticDto[]>(`${this.baseUrl}/statistiken/dienstellen/${departmentId}/zeitraumall`, timePeriodDto);
+  }
+
   getStatistics(userId: number): Observable<StatisticDto[]> {
     return this.http.get<StatisticDto[]>(`${this.baseUrl}/statistiken/${userId}`);
   }
