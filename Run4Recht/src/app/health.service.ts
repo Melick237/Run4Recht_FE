@@ -62,7 +62,7 @@ export class HealthService {
         const stepsByDate: { [date: string]: number } = {};
 
         data.forEach(item => {
-          const date = new Date(item.startDate).toISOString().split('T')[0];
+          const date = new Date(item.endDate).toISOString().split('T')[0];
           if (!stepsByDate[date]) {
             stepsByDate[date] = 0;
           }

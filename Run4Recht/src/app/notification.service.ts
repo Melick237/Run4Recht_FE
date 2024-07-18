@@ -94,7 +94,7 @@ export class NotificationService {
           id: 1,
           schedule: {
             on: {
-              hour: 12,
+              hour: 20,
               minute: 30,
             },
             repeats: true
@@ -162,8 +162,8 @@ export class NotificationService {
 
       if (userIndex > -1) {
         this.position = userIndex + 1;
-        let differenceToFront = Number.MAX_VALUE;
-        let differenceToBack = Number.MAX_VALUE;
+        let differenceToFront = 0;
+        let differenceToBack = 0;
 
         if (userIndex < sortedStatistics.length - 1) {
           differenceToFront = sortedStatistics[userIndex + 1].schritte - sortedStatistics[userIndex].schritte;
