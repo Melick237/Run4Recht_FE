@@ -9,11 +9,19 @@
     <h2 class="dienststelle">Position in der Dienststelle <ion-icon name="information-circle-outline"
         (click)="openModal()"></ion-icon></h2>
 
-    <div class="position">
-      <span *ngIf="differenceToFront !== null"><strong>{{ position - 1 }}.</strong> (+{{ differenceToFront }})</span>
-      <span class="middle"><strong>&larr; {{ position }}. &rarr;</strong></span>
-      <span *ngIf="differenceToBack !== null"><strong>{{ position + 1 }}.</strong> (-{{ differenceToBack }})</span>
-    </div>
+        <div class="position">
+          <span *ngIf="differenceToFront !== null && position > 1">
+            <strong>{{ position - 1 }}.</strong> (+{{ differenceToFront }})
+          </span>
+          <span class="middle">
+            <strong *ngIf="position > 1">&larr;</strong>
+            <strong>{{ position }}.</strong>
+            <strong *ngIf="position < totalPositions">&rarr;</strong>
+          </span>
+          <span *ngIf="differenceToBack !== null && position < totalPositions">
+            <strong>{{ position + 1 }}.</strong> (-{{ differenceToBack }})
+          </span>
+        </div>        
 
     <div class="wochen">
       <ion-segment [value]="currentWeek" (ionChange)="onSegmentChanged($event)" mode="ios" class="segment-round">
