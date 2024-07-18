@@ -105,6 +105,11 @@ export class HomePage implements OnInit, OnDestroy {
     this.stepsLabel = `/ ${this.totalSteps.toLocaleString()}`;
   }
 
+  isGoalReached(): boolean {
+    const stepsGoal = parseInt(this.stepsLabel.replace(/[^0-9]/g, ''), 10);
+    return this.steps >= stepsGoal;
+  }
+
   async presentLoading(message: string) {
     const loading = await this.loadingController.create({
       message,

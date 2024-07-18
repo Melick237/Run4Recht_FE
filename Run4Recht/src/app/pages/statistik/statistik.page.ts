@@ -325,4 +325,18 @@ export class StatistikPage implements OnInit, OnDestroy {
     event.target.complete();
     loading.dismiss();
   }
+
+  openModal() {
+    const modal = document.getElementById('infoModal');
+    if (modal) {
+      modal.style.display = 'block';
+    }
+  }
+
+  closeModal(event: any) {
+    const modal = document.getElementById('infoModal');
+    if (modal && (event.target === modal || event.target.className === 'close')) {
+      modal.style.display = 'none';
+    }
+  }
 }

@@ -8,7 +8,7 @@
 }
 
 .wochen {
-  margin-top: 30px;
+    margin-top: 30px;
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -19,23 +19,34 @@ ion-segment.segment-round {
     justify-content: space-between;
     background-color: transparent;
     padding-bottom: 10px;
-  }
+}
 
-  ion-segment-button.segment-button {
+ion-segment-button.segment-button {
     flex: 1;
-    max-width: 10% !important; /* Ajuste la largeur des boutons */
-    margin: 0 2px; /* Espace entre les boutons */
-    border-radius: 20px; /* Bords arrondis */
-    --border-radius: 20px; /* Bords arrondis */
-    --background: #F6F6F6; /* Fond blanc par défaut */
-    --background-checked: #0B1463; /* Fond bleu quand sélectionné */
+    max-width: 10% !important;
+    /* Ajuste la largeur des boutons */
+    margin: 0 2px;
+    /* Espace entre les boutons */
+    border-radius: 20px;
+    /* Bords arrondis */
+    --border-radius: 20px;
+    /* Bords arrondis */
+    --background: #F6F6F6;
+    /* Fond blanc par défaut */
+    --background-checked: #0B1463;
+    /* Fond bleu quand sélectionné */
     text-transform: initial;
-    --color: black; /* Couleur du texte non sélectionné */
-    --color-checked: rgb(255, 255, 255) !important; /* Couleur du texte quand sélectionné */
-    --indicator-color: transparent; /* Supprime l'indicateur */
-    --border-width: 0; /* Supprime les bordures verticales */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Ajoute une ombre */
-  }
+    --color: black;
+    /* Couleur du texte non sélectionné */
+    --color-checked: rgb(255, 255, 255) !important;
+    /* Couleur du texte quand sélectionné */
+    --indicator-color: transparent;
+    /* Supprime l'indicateur */
+    --border-width: 0;
+    /* Supprime les bordures verticales */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    /* Ajoute une ombre */
+}
 
 .taille {
     margin-top: 20px;
@@ -68,8 +79,17 @@ ion-segment.segment-round {
 }
 
 .dienststelle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     margin-top: 30px;
+}
+
+.dienststelle ion-icon {
+    margin-left: 10px;
+    font-size: 1.6em;
+    color: #0B1463;
 }
 
 .position span {
@@ -85,4 +105,58 @@ ion-segment.segment-round {
     font-size: 1.8em;
     white-space: nowrap;
     font-weight: bold;
+}
+
+.modal-content .bold {
+    font-weight: bold;
+}
+
+.modal-content .italique {
+    font-style: italic;
+}
+
+.modal {
+    display: none;
+    /* Masquer par défaut */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 50% auto;
+    padding: 20px;
+    border: 1px solid #0B1463;
+    border-radius: 20px;
+    width: 95%;
+    max-width: 600px;
+    text-align: left;
+    font-size: 1.2rem;
+}
+
+.modal-content p {
+    margin: 1em 0;
+    /* Ajouter de l'espace entre les paragraphes */
+}
+
+.close {
+    color: #0B1463;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
 }
