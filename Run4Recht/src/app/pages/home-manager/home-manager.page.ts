@@ -96,8 +96,8 @@ export class HomeManagerPage implements OnInit, OnDestroy {
         bis_datum: today
       };
     }
-
-    this.apiService.getStatisticsGroupByDepartmentWithPeriodAll(this.user.dienstelle_id, timePeriod).subscribe(
+    //this.apiService.getStatisticsGroupByDepartmentWithPeriodAll(this.user.dienstelle_id, timePeriod).subscribe(
+    this.apiService.getStatisticsGroupByDepartmentWithPeriod(this.user.dienstelle_id, timePeriod).subscribe(
       (statistics: StatisticDto[]) => {
         this.rankings = statistics.sort((a, b) => b.schritte - a.schritte);
         this.isLoading = false;

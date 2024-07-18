@@ -3,6 +3,12 @@
     <div class="home">Manager Home</div>
   </div>
 
+  <div class="reminder">
+    <ion-text color="primary">
+      <p>Hier können Sie die Schritte der einzelnen Mitglieder ergänzen. Klicken Sie einfach auf einen Eintrag.</p>
+    </ion-text>
+  </div>
+
   <ion-button expand="full" (click)="toggleFilter()">
     {{ filter === 'tournament' ? 'Zeige heutige Rangliste' : 'Zeige Turnierrangliste' }}
   </ion-button>
@@ -22,3 +28,13 @@
     <ion-spinner name="crescent"></ion-spinner>
   </ng-template>
 </ion-content>
+
+<style>
+  .reminder {
+    text-align: center;
+    padding: 10px;
+    background-color: #e0f7fa;
+    border-radius: 5px;
+    margin: 10px;
+  }
+</style>
