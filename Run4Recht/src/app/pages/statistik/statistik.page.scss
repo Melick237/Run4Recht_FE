@@ -66,6 +66,18 @@ ion-segment-button.segment-button {
     text-align: center;
 }
 
+.position {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 1.5em;
+    display: flex;
+    align-items: center;
+    /* Aligner les éléments verticalement */
+    justify-content: center;
+    /* Centrer horizontalement */
+    width: 100%;
+}
+
 .dienststelle {
     display: flex;
     align-items: center;
@@ -80,8 +92,19 @@ ion-segment-button.segment-button {
     color: #0B1463;
 }
 
+.position span {
+    display: inline-block;
+    margin: 0 10px;
+}
+
 .chart-container {
     margin-top: 20px;
+}
+
+.middle {
+    font-size: 1.8em;
+    white-space: nowrap;
+    font-weight: bold;
 }
 
 .modal-content .bold {
@@ -138,28 +161,6 @@ ion-segment-button.segment-button {
     cursor: pointer;
 }
 
-.position {
-    text-align: center;
-    margin-top: 40px;
-    font-size: 1.5em;
-    display: flex;
-    align-items: center; /* Aligner les éléments verticalement */
-    justify-content: center; /* Centrer horizontalement */
-    gap: 20px; /* Ajoute un espace entre les éléments */
-    width: 100%;
-  }
-  
-  .position span {
-    display: flex;
-    align-items: center; /* Aligner les éléments verticalement */
-  }
-  
-  .middle {
-    font-size: 1.8em;
-    white-space: nowrap;
-    font-weight: bold;
-    display: flex;
-    align-items: center; /* Aligner les éléments verticalement */
-    gap: 10px; /* Ajoute un espace entre les éléments */
-  }
-  
+.hidden-text {
+  color: white;
+}

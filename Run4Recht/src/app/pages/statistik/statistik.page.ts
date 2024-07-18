@@ -26,7 +26,6 @@ export class StatistikPage implements OnInit, OnDestroy {
   position: number = 0;
   differenceToFront: number | null = null;
   differenceToBack: number | null = null;
-  totalPositions: number = 0;
 
   constructor(
     private apiService: ApiService,
@@ -301,7 +300,6 @@ export class StatistikPage implements OnInit, OnDestroy {
 
           if (userIndex > -1) {
             this.position = userIndex + 1;
-            this.totalPositions = sortedStatistics.length;
             if (userIndex > 0) {
               this.differenceToFront = sortedStatistics[userIndex - 1].schritte - sortedStatistics[userIndex].schritte;
             }
