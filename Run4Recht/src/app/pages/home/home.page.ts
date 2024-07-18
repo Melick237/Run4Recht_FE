@@ -27,6 +27,8 @@ export class HomePage implements OnInit, OnDestroy {
   userSubscription: Subscription | undefined;
   profileSubscription: Subscription | undefined;
   stepsToday: number = -1;
+  tournamentStartDate: string = '';
+  tournamentEndDate: string = '';
 
   constructor(
     private modalController: ModalController,
@@ -63,7 +65,9 @@ export class HomePage implements OnInit, OnDestroy {
         this.initializeHealth().then(() => {
           this.loadProfile(user);
           this.loadTodayStatistics(user);
-          this.loadCompetitionStatistics(user);
+          this.loadTournamentData().then(() => {
+            this.loadCompetitionStatistics(user);
+          });
         });
       }
     });
@@ -121,7 +125,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   async loadProfile(user: UserDto) {
-    const loading = await this.presentLoading('Loading profile...');
+    const loading = await this.presentLoading('Profil wird geladen...');
     this.profileSubscription = this.apiService.getProfile(user.id).subscribe(
       (profile: ProfileDto) => {
         this.totalSteps = profile.tagesziel;
@@ -129,15 +133,15 @@ export class HomePage implements OnInit, OnDestroy {
         loading.dismiss(); // Dismiss the loading spinner
       },
       error => {
-        console.error('Error loading profile', error);
+        console.error('Fehler beim Laden des Profils', error);
         loading.dismiss(); // Dismiss the loading spinner
       }
     );
   }
 
   async loadTodayStatistics(user: UserDto) {
-    const loading = await this.presentLoading('Loading today\'s statistics...');
-    console.log('Loading statistics for user:', user.id, user.email);
+    const loading = await this.presentLoading('Heutige Statistiken werden geladen...');
+    console.log('Lade Statistiken für Benutzer:', user.id, user.email);
 
     const today = new Date().toISOString().split('T')[0];
 
@@ -156,40 +160,50 @@ export class HomePage implements OnInit, OnDestroy {
         loading.dismiss(); // Dismiss the loading spinner
       },
       error => {
-        console.error('Error loading statistics', error);
+        console.error('Fehler beim Laden der Statistiken', error);
         loading.dismiss(); // Dismiss the loading spinner
       }
     );
   }
 
-  async loadCompetitionStatistics(user: UserDto) {
-    const loading = await this.presentLoading('Loading competition statistics...');
-    this.apiService.getTournamentInfo().subscribe(
-      (tournamentInfo: TournamentInfoDto) => {
-        // fix: parse date error 
-        const timePeriod: TimePeriodDto = {
-          von_datum: Utils.normalizeDate(tournamentInfo.datum_beginn),
-          bis_datum: Utils.normalizeDate(tournamentInfo.datum_ende)
-        };
+  async loadTournamentData() {
+    const loading = await this.presentLoading('Turnierinformationen werden geladen...');
+    return new Promise<void>((resolve, reject) => {
+      this.apiService.getTournamentInfo().subscribe(
+        (tournamentInfo: TournamentInfoDto) => {
+          this.tournamentStartDate = Utils.normalizeDate(tournamentInfo.datum_beginn);
+          this.tournamentEndDate = Utils.normalizeDate(tournamentInfo.datum_ende);
+          loading.dismiss();
+          resolve();
+        },
+        error => {
+          console.error('Fehler beim Laden der Turnierinformationen', error);
+          loading.dismiss();
+          reject(error);
+        }
+      );
+    });
+  }
 
-        this.apiService.getStatisticsWithPeriod(user.id, timePeriod).subscribe(
-          (data: StatisticDto[]) => {
-            if (data && data.length > 0) {
-              const totalSteps = data.reduce((sum, stat) => sum + stat.schritte, 0);
-              this.competitionDistance = Math.round(data.reduce((sum, stat) => sum + stat.strecke, 0));
-              console.log('Total steps for competition:', totalSteps);
-              console.log('Total distance for competition:', this.competitionDistance);
-            }
-            loading.dismiss(); // Dismiss the loading spinner
-          },
-          error => {
-            console.error('Error loading competition statistics', error);
-            loading.dismiss(); // Dismiss the loading spinner
-          }
-        );
+  async loadCompetitionStatistics(user: UserDto) {
+    const loading = await this.presentLoading('Wettbewerbsstatistiken werden geladen...');
+    const timePeriod: TimePeriodDto = {
+      von_datum: this.tournamentStartDate,
+      bis_datum: new Date().toISOString().split('T')[0]
+    };
+
+    this.apiService.getStatisticsWithPeriod(user.id, timePeriod).subscribe(
+      (data: StatisticDto[]) => {
+        if (data && data.length > 0) {
+          const totalSteps = data.reduce((sum, stat) => sum + stat.schritte, 0);
+          this.competitionDistance = Math.round(data.reduce((sum, stat) => sum + stat.strecke, 0));
+          console.log('Total steps for competition:', totalSteps);
+          console.log('Total distance for competition:', this.competitionDistance);
+        }
+        loading.dismiss(); // Dismiss the loading spinner
       },
       error => {
-        console.error('Error loading tournament info', error);
+        console.error('Fehler beim Laden der Wettbewerbsstatistiken', error);
         loading.dismiss(); // Dismiss the loading spinner
       }
     );
@@ -206,61 +220,70 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   async initializeHealth() {
-    console.log('Checking health availability...');
+    console.log('Überprüfen der Gesundheitsverfügbarkeit...');
     const available = await this.healthService.isAvailable();
     if (available) {
-      console.log('Health is available');
+      console.log('Gesundheitsdaten sind verfügbar');
       try {
         await this.healthService.requestAuthorization();
-        console.log('Authorization granted');
+        console.log('Genehmigung erteilt');
         await this.getTodaySteps();
       } catch (e) {
-        console.log('Error requesting authorization', e);
+        console.log('Fehler bei der Anforderung der Genehmigung', e);
       }
     } else {
-      console.log('Health is not available');
+      console.log('Gesundheitsdaten sind nicht verfügbar');
     }
   }
 
   async getTodaySteps() {
-    const lastUploadDate = await this.storage.get('lastUploadDate');
-    const lastUploadSteps = await this.storage.get('lastUploadSteps');
+    let lastUploadDate = await this.storage.get('lastUploadDate');
 
-    const startDate = lastUploadDate ? new Date(lastUploadDate) : new Date();
-    startDate.setHours(0, 0, 0, 0); // Start of the last upload day or today
+    if (!lastUploadDate) {
+      lastUploadDate = this.tournamentStartDate;
+    }
+    const lastUploadSteps = await this.storage.get('lastUploadSteps');
+    const startDate = new Date(lastUploadDate);
     const endDate = new Date(); // Current time
+    startDate.setHours(0, 0, 0, 0); // Start of the last upload day or today
 
     try {
-      const steps = await this.healthService.querySteps(startDate, endDate);
-      const stepsSinceLastUpload = steps - (lastUploadSteps || 0);
-      this.stepsToday = stepsSinceLastUpload > 0 ? stepsSinceLastUpload : steps;
-      await this.updateStepsOnServer(stepsSinceLastUpload);
+      const stepsData: { date: string; steps: number }[] = await this.healthService.queryStepsWithDate(startDate, endDate);
+
+      for (let i = 0; i < stepsData.length; i++) {
+        const { date, steps } = stepsData[i];
+        const stepsSinceLastUpload = steps - (lastUploadSteps || 0);
+        console.log( 'start ' ,startDate.toISOString(), "   end  ", endDate.toISOString())
+
+        console.log( 'total ' ,stepsSinceLastUpload, "   steps ", steps,   "  last upload ", lastUploadSteps)
+
+        const statistic: StatisticDto = {
+          id: null,
+          mitarbeiter_id: this.userService.getUser()!.id,
+          schritte: stepsSinceLastUpload >= 0 ? stepsSinceLastUpload : steps,
+          strecke: this.calculateDistance(stepsSinceLastUpload > 0 ? stepsSinceLastUpload : steps),
+          datum: date // Use the date for this statistic
+        };
+
+        await this.uploadStatistic(statistic);
+      }
+
       await this.storage.set('lastUploadDate', endDate.toISOString());
-      await this.storage.set('lastUploadSteps', steps);
+      await this.storage.set('lastUploadSteps', stepsData[stepsData.length - 1].steps);
     } catch (e) {
-      console.log('Error querying steps', e);
+      console.log('Fehler bei der Abfrage der Schritte', e);
     }
   }
 
-  async updateStepsOnServer(steps: number) {
-    const user = this.userService.getUser();
-    if (!user) {
-      console.error('User not logged in');
-      return;
-    }
-
-    const statistic: StatisticDto = {
-      id: null,
-      mitarbeiter_id: user.id,
-      schritte: steps,
-      strecke: this.calculateDistance(steps),
-      datum: new Date().toISOString().split('T')[0] // Format date as 'YYYY-MM-DD'
-    };
-
-    this.apiService.updateStatistic(statistic).subscribe(response => {
-      console.log('Steps updated on server', response);
-    }, error => {
-      console.error('Error updating steps on server', JSON.stringify(error));
+  async uploadStatistic(statistic: StatisticDto) {
+    return new Promise<void>((resolve, reject) => {
+      this.apiService.updateStatistic(statistic).subscribe(response => {
+        console.log('Schritte erfolgreich auf dem Server aktualisiert', response);
+        resolve();
+      }, error => {
+        console.error('Fehler beim Aktualisieren der Schritte auf dem Server', JSON.stringify(error));
+        reject(error);
+      });
     });
   }
 
