@@ -42,9 +42,9 @@
   <div id="infoModal" class="modal" (click)="closeModal($event)">
     <div class="modal-content">
       <span class="close" (click)="closeModal($event)">&times;</span>
-      <p>Ihre aktuelle Position in der Rangliste ihrer Dienststelle: <span class="bold">7. Platz</span>.</p>
-      <p>Sie haben <span class="italique">70 </span> Schritte Vorsprung auf den <span class="bold">8. Platz</span> und
-        benötigen <span class="italique">210 </span> Schritte, um den <span class="bold">6. Platz</span> zu erreichen.
+      <p>Ihre aktuelle Position in der Rangliste ihrer Dienststelle: <span class="bold">{{position}}. Platz</span>.</p>
+      <p>Sie haben <span class="italique">{{differenceToBack}}</span> Schritte Vorsprung auf den <span class="bold">{{position+1}}. Platz</span> und
+        benötigen <span class="italique">{{differenceToFront}} </span> Schritte, um den <span class="bold">{{position-1}}. Platz</span> zu erreichen.
       </p>
     </div>
   </div>
