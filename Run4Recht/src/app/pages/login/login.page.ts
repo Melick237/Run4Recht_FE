@@ -13,6 +13,8 @@ import { NotificationService } from '../../notification.service';
 })
 export class LoginPage implements OnInit {
   email: string = '';
+  // password: string = '$2a$10$fGkD/jl8LScyVf29APyCfeTWPXHMfdVWASBdS6ARHCuq/Ig7Ab3r.';
+  //password: string = 'run4recht-1-4'; // Hardcoded password
 
   constructor(
     private navCtrl: NavController,
@@ -29,7 +31,7 @@ export class LoginPage implements OnInit {
     const storedEmail = await this.storage.get('email');
     if (storedEmail) {
       this.email = storedEmail;
-      //await this.login()
+      // await this.login(); // Uncomment if you want to auto-login
     }
   }
 
@@ -38,7 +40,7 @@ export class LoginPage implements OnInit {
       await this.storage.set('email', this.email);
       this.login();
     } else {
-      console.log('Veuillez entrer une adresse e-mail valide.');
+      console.log('Bitte geben Sie eine gültige E-Mail-Adresse ein.');
       this.presentToast('Bitte geben Sie eine gültige E-Mail-Adresse ein.', 'danger');
     }
   }
@@ -48,26 +50,27 @@ export class LoginPage implements OnInit {
       message: 'Bitte warten...',
     });
     await loading.present();
-
     const userDto: UserDto = {
       id: 0,
       name: '',
       email: this.email,
       role: Role.USER,
       dienstelle_id: 0,
+      passwort: ''
     };
 
     this.apiService.login(userDto).subscribe(
-      async (response: any) => {
-        console.log('Login successful:', response);
+      async (response: UserDto) => {
+        console.log('Login erfolgreich:', response);
         this.userService.setUser(response);
+        this.apiService.setCredentials(response.email, response.passwort); // Store credentials after successful login
         await this.scheduleNotifications();
         this.navCtrl.navigateForward('/tabs/home');
         await loading.dismiss();
         this.presentToast('Login erfolgreich!', 'success');
       },
       async (error: any) => {
-        console.error('Login failed:', error);
+        console.error('Login fehlgeschlagen:', error);
         await loading.dismiss();
         this.presentToast('Login fehlgeschlagen. Bitte versuchen Sie es erneut.', 'danger');
       }

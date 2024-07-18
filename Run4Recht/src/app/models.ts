@@ -57,6 +57,7 @@ export interface UserDto {
   email: string;
   role: Role;
   dienstelle_id: number;
+  passwort:string;
   stepGoal?: number; // Add optional fields if they exist in your backend model
   height?: number;
   stepLength?: number;

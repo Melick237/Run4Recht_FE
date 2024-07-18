@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CourtDto, DepartmentDto, PeriodStatisticDto, RankingDto, StatisticDto, TimePeriodDto, UserDto, ProfileDto, TournamentInfoDto } from './models';
 
@@ -7,15 +7,28 @@ import { CourtDto, DepartmentDto, PeriodStatisticDto, RankingDto, StatisticDto, 
   providedIn: 'root'
 })
 export class ApiService {
-
-  //private baseUrl = 'http://localhost:8080/api'; // Base URL of your Spring Boot application
-  //private baseUrl = 'http://mux-team4.th-brandenburg.de:8080/api';
-  //private baseUrl = ''
-  //private baseUrl = 'https://mux-team4.th-brandenburg.de:8443/api';
   private baseUrl = 'https://muxteam4.de/api';
-
+  private email: string | null = null;
+  private password: string | null = null;
 
   constructor(private http: HttpClient) {}
+
+  // Method to generate headers with basic authentication
+  private getHeaders(): HttpHeaders {
+    if (this.email && this.password) {
+      const auth = btoa(`${this.email}:${this.password}`);
+      return new HttpHeaders({
+        'Authorization': `Basic ${auth}`
+      });
+    }
+    return new HttpHeaders();
+  }
+
+  // Method to set credentials after login
+  setCredentials(email: string, password: string) {
+    this.email = email;
+    this.password = password;
+  }
 
   // Authentication APIs
   login(userDto: UserDto): Observable<UserDto> {
@@ -23,94 +36,110 @@ export class ApiService {
     return this.http.post<UserDto>(`${this.baseUrl}/auth/login`, userDto);
   }
 
-  // Court APIs
+  // Example for getting courts
   getCourts(): Observable<CourtDto[]> {
-    return this.http.get<CourtDto[]>(`${this.baseUrl}/gerichte`);
+    const headers = this.getHeaders();
+    return this.http.get<CourtDto[]>(`${this.baseUrl}/gerichte`, { headers });
   }
 
   // Department APIs
   getDepartments(): Observable<DepartmentDto[]> {
-    return this.http.get<DepartmentDto[]>(`${this.baseUrl}/dienstellen`);
+    const headers = this.getHeaders();
+    return this.http.get<DepartmentDto[]>(`${this.baseUrl}/dienstellen`, { headers });
   }
 
   getDepartmentById(departmentId: number): Observable<DepartmentDto> {
-    return this.http.get<DepartmentDto>(`${this.baseUrl}/dienstellen/${departmentId}`);
+    const headers = this.getHeaders();
+    return this.http.get<DepartmentDto>(`${this.baseUrl}/dienstellen/${departmentId}`, { headers });
   }
 
   // Ranking APIs
   getRankingsGroupByDepartment(): Observable<RankingDto[]> {
-    return this.http.get<RankingDto[]>(`${this.baseUrl}/ranking`);
+    const headers = this.getHeaders();
+    return this.http.get<RankingDto[]>(`${this.baseUrl}/ranking`, { headers });
   }
-/*  getRankingsGroupByDepartment(departmentId: number): Observable<StatisticDto[]> {
-    return this.http.get<StatisticDto[]>(`${this.baseUrl}/statistiken/dienstellen/${departmentId}`);
-  }*/
-
 
   getRankingsGroupByDepartmentWithPeriod(timePeriodDto: TimePeriodDto): Observable<RankingDto[]> {
-    return this.http.post<RankingDto[]>(`${this.baseUrl}/ranking/zeitraum`, timePeriodDto);
+    const headers = this.getHeaders();
+    return this.http.post<RankingDto[]>(`${this.baseUrl}/ranking/zeitraum`, timePeriodDto, { headers });
   }
 
   getRankingByCurrentMonth(): Observable<RankingDto[]> {
-    return this.http.get<RankingDto[]>(`${this.baseUrl}/ranking/aktueller-monat`);
+    const headers = this.getHeaders();
+    return this.http.get<RankingDto[]>(`${this.baseUrl}/ranking/aktueller-monat`, { headers });
   }
 
   // Statistic APIs
   getStatisticsGroupByDepartment(departmentId: number): Observable<StatisticDto[]> {
-    return this.http.get<StatisticDto[]>(`${this.baseUrl}/statistiken/dienstellen/${departmentId}`);
+    const headers = this.getHeaders();
+    return this.http.get<StatisticDto[]>(`${this.baseUrl}/statistiken/dienstellen/${departmentId}`, { headers });
   }
 
   getStatisticsGroupByDepartmentWithPeriod(departmentId: number, timePeriodDto: TimePeriodDto): Observable<StatisticDto[]> {
-    return this.http.post<StatisticDto[]>(`${this.baseUrl}/statistiken/dienstellen/${departmentId}/zeitraum`, timePeriodDto);
+    const headers = this.getHeaders();
+    return this.http.post<StatisticDto[]>(`${this.baseUrl}/statistiken/dienstellen/${departmentId}/zeitraum`, timePeriodDto, { headers });
   }
 
   getStatisticsGroupByDepartmentWithPeriodAll(departmentId: number, timePeriodDto: TimePeriodDto): Observable<StatisticDto[]> {
-    return this.http.post<StatisticDto[]>(`${this.baseUrl}/statistiken/dienstellen/${departmentId}/zeitraumall`, timePeriodDto);
+    const headers = this.getHeaders();
+    return this.http.post<StatisticDto[]>(`${this.baseUrl}/statistiken/dienstellen/${departmentId}/zeitraumall`, timePeriodDto, { headers });
   }
 
   getStatistics(userId: number): Observable<StatisticDto[]> {
-    return this.http.get<StatisticDto[]>(`${this.baseUrl}/statistiken/${userId}`);
+    const headers = this.getHeaders();
+    return this.http.get<StatisticDto[]>(`${this.baseUrl}/statistiken/${userId}`, { headers });
   }
 
   getStatisticsWithPeriod(userId: number, timePeriodDto: TimePeriodDto): Observable<StatisticDto[]> {
-    return this.http.post<StatisticDto[]>(`${this.baseUrl}/statistiken/${userId}/zeitraum`, timePeriodDto);
+    const headers = this.getHeaders();
+    return this.http.post<StatisticDto[]>(`${this.baseUrl}/statistiken/${userId}/zeitraum`, timePeriodDto, { headers });
   }
 
   getStatisticsByCurrentMonth(userId: number): Observable<StatisticDto[]> {
-    return this.http.get<StatisticDto[]>(`${this.baseUrl}/statistiken/aktueller-monat/${userId}`);
+    const headers = this.getHeaders();
+    return this.http.get<StatisticDto[]>(`${this.baseUrl}/statistiken/aktueller-monat/${userId}`, { headers });
   }
 
   updateStatistic(dto: StatisticDto): Observable<StatisticDto> {
-    return this.http.put<StatisticDto>(`${this.baseUrl}/statistiken`, dto);
+    const headers = this.getHeaders();
+    return this.http.put<StatisticDto>(`${this.baseUrl}/statistiken`, dto, { headers });
   }
 
   updateStatistics(psDto: PeriodStatisticDto): Observable<StatisticDto[]> {
-    return this.http.put<StatisticDto[]>(`${this.baseUrl}/statistiken/zeitraum`, psDto);
+    const headers = this.getHeaders();
+    return this.http.put<StatisticDto[]>(`${this.baseUrl}/statistiken/zeitraum`, psDto, { headers });
   }
 
   // User APIs
   getUsers(): Observable<UserDto[]> {
-    return this.http.get<UserDto[]>(`${this.baseUrl}/mitarbeiter`);
+    const headers = this.getHeaders();
+    return this.http.get<UserDto[]>(`${this.baseUrl}/mitarbeiter`, { headers });
   }
 
   getUsersInDepartment(departmentId: number): Observable<UserDto[]> {
-    return this.http.post<UserDto[]>(`${this.baseUrl}/mitarbeiter/${departmentId}`, { departmentId });
+    const headers = this.getHeaders();
+    return this.http.post<UserDto[]>(`${this.baseUrl}/mitarbeiter/${departmentId}`, { departmentId }, { headers });
   }
 
   // Profile APIs
   getProfile(userId: number): Observable<ProfileDto> {
-    return this.http.get<ProfileDto>(`${this.baseUrl}/profil/${userId}`);
+    const headers = this.getHeaders();
+    return this.http.get<ProfileDto>(`${this.baseUrl}/profil/${userId}`, { headers });
   }
 
   updateProfile(userId: number, profileDto: ProfileDto): Observable<ProfileDto> {
-    return this.http.put<ProfileDto>(`${this.baseUrl}/profil/${userId}`, profileDto);
+    const headers = this.getHeaders();
+    return this.http.put<ProfileDto>(`${this.baseUrl}/profil/${userId}`, profileDto, { headers });
   }
 
   // Tournament Information APIs
   getTournamentInfo(): Observable<TournamentInfoDto> {
-    return this.http.get<TournamentInfoDto>(`${this.baseUrl}/turnierinfo`);
+    const headers = this.getHeaders();
+    return this.http.get<TournamentInfoDto>(`${this.baseUrl}/turnierinfo`, { headers });
   }
 
   addTournamentInfo(infoDto: TournamentInfoDto): Observable<TournamentInfoDto> {
-    return this.http.put<TournamentInfoDto>(`${this.baseUrl}/turnierinfo`, infoDto);
+    const headers = this.getHeaders();
+    return this.http.put<TournamentInfoDto>(`${this.baseUrl}/turnierinfo`, infoDto, { headers });
   }
 }
