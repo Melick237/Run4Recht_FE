@@ -32,8 +32,51 @@
     margin-left: 25%;
   }
 
-  ion-button{
+  ion-button::part(native){
     text-transform: initial;
   }
 
+.tiret{
+  font-size: 2em;
+  color: #0b1463;
+  margin-top: 12px;
+}
+  ion-datetime-button::part(native) {
+    color: #0b1463;
+    --border-width: 0 !important; 
+    background-color: transparent !important;
+    margin-left: -8px;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: space-between; 
+    padding: 0 20px; 
+    margin-top: 10px;
+  }
   
+  .left-button, .right-button {
+    flex: 1; 
+    margin: 0 50px; 
+    max-width: calc(50% - 20px); 
+  }  
+  
+  .ion-rounded {
+    --border-radius: 10px; 
+    width: 150px;
+  }
+  .rounded{
+    --border-radius: 10px;
+    width: 150px;
+    --border-color: #0b1463;
+    --border-width: 2px;
+  }
+
+  .custom-button {
+    white-space: nowrap;
+  }
+
+  ion-icon{
+    margin-left: 5px;
+    margin-right: 5px;
+  }  
