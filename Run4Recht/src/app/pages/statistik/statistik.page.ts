@@ -302,9 +302,13 @@ export class StatistikPage implements OnInit, OnDestroy {
             this.position = userIndex + 1;
             if (userIndex > 0) {
               this.differenceToFront = sortedStatistics[userIndex - 1].schritte - sortedStatistics[userIndex].schritte;
+            }else {
+              this.differenceToFront = null;
             }
             if (userIndex < sortedStatistics.length - 1) {
               this.differenceToBack = sortedStatistics[userIndex].schritte - sortedStatistics[userIndex + 1].schritte;
+            }else {
+              this.differenceToBack = null;
             }
           }
           loading.dismiss(); // Dismiss the loading spinner
