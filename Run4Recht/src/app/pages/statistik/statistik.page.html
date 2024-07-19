@@ -12,7 +12,7 @@
     <div class="position">
       <span *ngIf="differenceToFront !== null"><strong>{{ position - 1 }}.</strong> (+{{ differenceToFront }})</span>
       <span *ngIf="differenceToFront === null || position === 1" [ngClass]="{'hidden-text': true}"><strong>0.</strong> (+500)</span>
-      <span class="middle"><strong><span [ngClass]="{'hidden-text2': (!differenceToFront || position === 1)}">&larr;</span> {{ position }}. <span [ngClass]="{'hidden-text2': !differenceToBack}">&rarr;</span></strong></span>
+      <span class="middle"><strong><span [ngClass]="{'hidden-text': (!differenceToFront || position === 1)}">&#8672;</span> {{ position }}. <span [ngClass]="{'hidden-text': !differenceToBack}">&#8674;</span></strong></span>
       <span *ngIf="differenceToBack !== null"><strong>{{ position + 1 }}.</strong> (-{{ differenceToBack }})</span>
       <span *ngIf="differenceToBack === null" [ngClass]="{'hidden-text': true}"><strong>X.</strong> (-500)</span>
     </div>
